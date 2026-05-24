@@ -571,6 +571,15 @@
       gap: 10px;
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
       margin-top: 8px;
+      touch-action: none; /* Prevents page scroll when signing on mobile */
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 150px;
+      display: flex;
+      justify-content: center;
     }
 
     .signature-pad-canvas {
@@ -668,6 +677,9 @@
       }
       
       /* Signature Pad mobile adjustments */
+      .canvas-container {
+        height: 180px;
+      }
       .signature-pad-canvas {
         height: 180px; /* slightly taller for easier finger drawing */
       }
@@ -1013,8 +1025,8 @@
           <div class="form-group">
             <label>निरीक्षक के हस्ताक्षर (Inspector Signature) <span>*</span></label>
             <div class="signature-pad-wrapper">
-              <div style="position: relative; width: 100%; height: 150px; display: flex; justify-content: center;">
-                <canvas id="signature-pad" class="signature-pad-canvas" width="450" height="150"></canvas>
+              <div class="canvas-container">
+                <canvas id="signature-pad" class="signature-pad-canvas"></canvas>
                 <div id="sig-instruction" class="sig-watermark">यहाँ माउस या टच द्वारा हस्ताक्षर करें (Draw signature
                   here)</div>
               </div>
@@ -1224,6 +1236,11 @@
     function initSignatureCanvas() {
       sigCanvas = document.getElementById('signature-pad');
       if (sigCanvas) {
+        // Set canvas internal resolution to match its actual CSS display dimensions
+        const rect = sigCanvas.getBoundingClientRect();
+        sigCanvas.width = rect.width;
+        sigCanvas.height = rect.height;
+
         sigCtx = sigCanvas.getContext('2d');
 
         // Setup stroke styling
@@ -1251,8 +1268,8 @@
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       return {
-        x: (clientX - rect.left) * (sigCanvas.width / rect.width),
-        y: (clientY - rect.top) * (sigCanvas.height / rect.height)
+        x: clientX - rect.left,
+        y: clientY - rect.top
       };
     }
 
