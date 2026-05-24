@@ -1,0 +1,205 @@
+/**
+ * Census Inspection Web Form Backend (Code.gs)
+ * Saves reports to Google Sheets and serves the premium web interface.
+ */
+
+// Name of the Sheet where data will be stored
+const SHEET_NAME = 'FieldReports';
+
+/**
+ * Serves the HTML Web Form.
+ */
+function doGet(e) {
+  const htmlOutput = HtmlService.createTemplateFromFile('Index')
+    .evaluate()
+    .setTitle('जनगणना निरीक्षण फील्ड रिपोर्ट - Census Inspection')
+    .setSandboxMode(HtmlService.SandboxMode.IFRAME)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  return htmlOutput;
+}
+
+/**
+ * Handles CORS POST requests from external pages (like GitHub Pages).
+ */
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const result = saveReport(data);
+    return ContentService.createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: 'error',
+      message: 'सर्वर एरर (डेटा पार्सिंग): ' + err.toString()
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+
+/**
+ * Saves the submitted form data into Google Sheet.
+ * @param {Object} data - Form fields submitted by frontend
+ * @return {Object} Result of save operation
+ */
+function saveReport(data) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    
+    // If the sheet doesn't exist, create it and add headers
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      const headers = [
+        'Timestamp',
+        'निरीक्षक का पद (Role)',
+        'निरीक्षक का नाम (Inspector Name)',
+        'निरीक्षण की तिथि (Inspection Date)',
+        'राज्य/जिला (State/District)',
+        'तहसील/ब्लॉक/वार्ड (Tehsil/Block/Ward)',
+        'गणना ब्लॉक नंबर (EB Number)',
+        'प्रगणक का नाम (Enumerator Name)',
+        'पर्यवेक्षक का नाम (Supervisor Name)',
+        'पर्यवेक्षक सर्कल नंबर (Supervisor Circle No.)',
+        'जनगणना मकान अपेक्षित (Expected Houses)',
+        'अब तक पूरे किए गए घर (Completed)',
+        'बचे हुए घर (Pending)',
+        'क्या नक़्शा सही है? (Map Correct)',
+        'क्या कोई घर छूटा हुआ मिला? (Missed Houses)',
+        'बिंदु 1: घर-घर जाकर डेटा भर रहा है (Door-to-Door)',
+        'बिंदु 1: टिप्पणी (Door-to-Door Remarks)',
+        'बिंदु 2: मकान सूचीकरण सही है (Houselisting)',
+        'बिंदु 2: टिप्पणी (Houselisting Remarks)',
+        'बिंदु 3: मुखिया का नाम सही दर्ज है (Head of Family)',
+        'बिंदु 3: टिप्पणी (Head of Family Remarks)',
+        'बिंदु 4: सदस्यों की संख्या/लिंग सही है (Members/Gender)',
+        'बिंदु 4: टिप्पणी (Members/Gender Remarks)',
+        'बिंदु 5: मोबाइल/आईडी स्वेच्छा से लिया (ID Taken)',
+        'बिंदु 5: टिप्पणी (ID Taken Remarks)',
+        'बिंदु 6: लोग सहयोग कर रहे हैं (Cooperation)',
+        'बिंदु 6: टिप्पणी (Cooperation Remarks)',
+        'बिंदु 7: डिजिटल ऐप/किट सही काम कर रही है (App Working)',
+        'बिंदु 7: टिप्पणी (App Working Remarks)',
+        'शिकायत 1 (Complaint 1)',
+        'शिकायत 2 (Complaint 2)',
+        'शिकायत 3 (Complaint 3)',
+        'सुझाव 1 (Suggestion 1)',
+        'सुझाव 2 (Suggestion 2)',
+        'सुझाव 3 (Suggestion 3)',
+        'समग्र फीडबैक (Overall Rating)',
+        'हस्ताक्षर (Signature)'
+      ];
+      sheet.appendRow(headers);
+      
+      // Make header row bold and frozen
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#f1f3f4');
+      sheet.setFrozenRows(1);
+    } else {
+      // Ensure the 'हस्ताक्षर (Signature)' header exists in the existing sheet
+      const lastColumn = sheet.getLastColumn();
+      if (lastColumn > 0) {
+        const headerRange = sheet.getRange(1, 1, 1, lastColumn);
+        const existingHeaders = headerRange.getValues()[0];
+        const sigHeaderIndex = existingHeaders.indexOf('हस्ताक्षर (Signature)');
+        if (sigHeaderIndex === -1) {
+          sheet.getRange(1, lastColumn + 1).setValue('हस्ताक्षर (Signature)').setFontWeight('bold').setBackground('#f1f3f4');
+        }
+      }
+    }
+    
+    // Process Signature if present
+    let signatureCellVal = '';
+    if (data.signature_base64 && data.signature_base64.indexOf('data:image/png;base64,') === 0) {
+      try {
+        const base64Data = data.signature_base64.split(',')[1];
+        const decoded = Utilities.base64Decode(base64Data);
+        const blob = Utilities.newBlob(decoded, 'image/png', 'Signature_' + (data.inspector_name || 'Inspector').replace(/[^a-zA-Z0-9]/g, '_') + '_' + new Date().getTime() + '.png');
+        
+        // Try to save inside the folder of the active Spreadsheet
+        let folder = null;
+        try {
+          const fileId = SpreadsheetApp.getActiveSpreadsheet().getId();
+          const file = DriveApp.getFileById(fileId);
+          const folders = file.getParents();
+          if (folders.hasNext()) {
+            folder = folders.next();
+          }
+        } catch(e) {
+          // Folder retrieval failed, will save to Drive root
+        }
+        
+        const sigFile = folder ? folder.createFile(blob) : DriveApp.createFile(blob);
+        sigFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        const fileId = sigFile.getId();
+        
+        // Generate =IMAGE() formula to make it visible inline in Google Sheets
+        signatureCellVal = `=IMAGE("https://drive.google.com/uc?export=view&id=${fileId}")`;
+      } catch(e) {
+        // Fallback to storing raw base64 if DriveApp is not authorized or fails
+        signatureCellVal = data.signature_base64;
+      }
+    }
+    
+    // Process input data structure
+    const rowData = [
+      new Date(),
+      data.inspector_role || '',
+      data.inspector_name || '',
+      data.inspection_date || '',
+      data.district || '',
+      data.block || '',
+      data.eb_number || '',
+      data.enumerator_name || '',
+      data.supervisor_name || '',
+      data.supervisor_circle_no || '',
+      Number(data.assigned_houses) || 0,
+      Number(data.completed_houses) || 0,
+      Number(data.pending_houses) || 0,
+      data.map_correct || '',
+      data.missed_houses || '',
+      
+      // Checklist Items (Status & Remarks)
+      data.chk_1_status || '',
+      data.chk_1_remarks || '',
+      data.chk_2_status || '',
+      data.chk_2_remarks || '',
+      data.chk_3_status || '',
+      data.chk_3_remarks || '',
+      data.chk_4_status || '',
+      data.chk_4_remarks || '',
+      data.chk_5_status || '',
+      data.chk_5_remarks || '',
+      data.chk_6_status || '',
+      data.chk_6_remarks || '',
+      data.chk_7_status || '',
+      data.chk_7_remarks || '',
+      
+      // Complaints
+      data.complaint_1 || '',
+      data.complaint_2 || '',
+      data.complaint_3 || '',
+      
+      // Suggestions
+      data.suggestion_1 || '',
+      data.suggestion_2 || '',
+      data.suggestion_3 || '',
+      
+      data.overall_rating || '',
+      signatureCellVal
+    ];
+    
+    // Write row
+    sheet.appendRow(rowData);
+    
+    return {
+      status: 'success',
+      message: 'डेटा और हस्ताक्षर सफलतापूर्वक सेव हो गया है।',
+      timestamp: new Date().toLocaleString()
+    };
+  } catch(e) {
+    return {
+      status: 'error',
+      message: 'सेव करने में त्रुटि: ' + e.toString()
+    };
+  }
+}

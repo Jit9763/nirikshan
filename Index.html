@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>जनगणना निरीक्षण फील्ड रिपोर्ट - Census Inspection Report</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* CSS VARIABLES FOR PREMIUM THEMING */
+    :root {
+      --primary-color: #0f172a;
+      /* Deep Slate Navy */
+      --primary-hover: #1e293b;
+      --accent-color: #d97706;
+      /* Amber Gold for official highlights */
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-color: #334155;
+      --text-dark: #0f172a;
+      --border-color: #e2e8f0;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --font-ui: 'Inter', -apple-system, sans-serif;
+      --font-hindi: 'Tiro Devanagari Hindi', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    /* HEADER BANNER */
+    .header-banner {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 30px 40px;
+      text-align: center;
+      position: relative;
+      border-bottom: 4px solid var(--accent-color);
+    }
+
+    .header-banner h1 {
+      font-family: var(--font-hindi);
+      font-size: 2.2rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-banner p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      font-weight: 400;
+    }
+
+    .header-banner .badge {
+      display: inline-block;
+      margin-top: 15px;
+      background-color: var(--accent-color);
+      color: var(--primary-color);
+      padding: 4px 15px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* FORM CONTENT */
+    form {
+      padding: 40px;
+    }
+
+    .section-title {
+      font-family: var(--font-hindi);
+      font-size: 1.4rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 20px;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+    }
+
+    /* GRID LAYOUTS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 30px;
+      margin-bottom: 30px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px 30px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-group label span {
+      color: var(--danger-color);
+    }
+
+    /* INPUTS & SELECTS */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text-dark);
+      transition: all 0.3s ease;
+      background-color: #fafafa;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(15, 23, 66, 0.1);
+      background-color: #ffffff;
+    }
+
+    /* PROGRESS & LOGIC SECTION */
+    .progress-card {
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    /* TABLE STYLES */
+    .table-responsive {
+      overflow-x: auto;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: var(--text-dark);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    td {
+      font-size: 0.92rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      gap: 15px;
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .radio-label input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-color);
+    }
+
+    /* COMPLAINTS & SUGGESTIONS LISTS */
+    .list-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .list-item-input {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .list-item-number {
+      font-weight: bold;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+      width: 20px;
+    }
+
+    /* ACTION BUTTONS */
+    .btn-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 40px;
+      border-top: 2px solid var(--border-color);
+      padding-top: 25px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      box-shadow: 0 4px 6px rgba(15, 23, 42, 0.15);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #f1f5f9;
+    }
+
+    /* LOADER overlay */
+    #loader {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: #ffffff;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border-left-color: #ffffff;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* RESULT/REPORT SCREEN (Styled as a formal paper sheet on screen) */
+    #reportView {
+      display: none;
+      padding: 40px;
+      background-color: #ffffff;
+      color: #000000;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-radius: 6px;
+      margin: 20px auto;
+      max-width: 850px;
+      border: 1px solid var(--border-color);
+    }
+
+    .success-alert {
+      background-color: #d1fae5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Print and Screen Shared Report Styles */
+    .print-header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 3px double #000000;
+      padding-bottom: 15px;
+      color: #000000;
+    }
+
+    .print-header h1 {
+      font-family: var(--font-hindi);
+      font-size: 20pt;
+      margin-bottom: 5px;
+      color: #000000;
+    }
+
+    .print-header p {
+      font-size: 11pt;
+      font-style: italic;
+      color: #000000;
+    }
+
+    .print-section {
+      margin-bottom: 25px;
+      page-break-inside: avoid;
+    }
+
+    .print-section-title {
+      font-family: var(--font-hindi);
+      font-size: 14pt;
+      font-weight: bold;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 3px;
+      margin-bottom: 12px;
+      color: #000000;
+    }
+
+    .print-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      margin-bottom: 15px;
+    }
+
+    .print-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px 20px;
+      margin-bottom: 15px;
+    }
+
+    .print-field {
+      font-size: 11pt;
+      color: #000000;
+    }
+
+    .print-field strong {
+      font-weight: 600;
+    }
+
+    /* Custom print table formatting for screen + print */
+    #reportView table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+      border: 1px solid #000000;
+    }
+
+    #reportView th,
+    #reportView td {
+      border: 1px solid #000000 !important;
+      padding: 8px 10px !important;
+      font-size: 10.5pt;
+      color: #000000;
+      text-align: left;
+    }
+
+    #reportView th {
+      background-color: #f2f2f2 !important;
+      color: #000000 !important;
+      font-weight: 600;
+    }
+
+    .signature-block {
+      margin-top: 60px;
+      display: flex;
+      justify-content: space-between;
+      page-break-inside: avoid;
+    }
+
+    .sig-line {
+      width: 250px;
+      text-align: center;
+      border-top: 1px solid #000000;
+      padding-top: 5px;
+      font-size: 11pt;
+      color: #000000;
+    }
+
+    /* PRINT ONLY OVERRIDES & ONE-PAGE OPTIMIZATION */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 10mm 8mm 10mm;
+      }
+
+      body {
+        background-color: #ffffff;
+        color: #000000;
+        padding: 0;
+        margin: 0;
+        font-size: 9.5pt;
+        line-height: 1.35;
+      }
+
+      .container {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Hide all interactive elements */
+      .header-banner .badge,
+      .btn-container,
+      .success-alert,
+      #formView,
+      .no-print {
+        display: none !important;
+      }
+
+      /* Remove margins, shadows, and paddings for paper print layout */
+      #reportView {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+      }
+
+      /* Tighten layout spacing to guarantee a single page print */
+      .print-header {
+        margin-bottom: 15px !important;
+        padding-bottom: 8px !important;
+        border-bottom: 2px double #000000 !important;
+      }
+
+      .print-header h1 {
+        font-size: 16pt !important;
+        margin-bottom: 3px !important;
+      }
+
+      .print-header p {
+        font-size: 9pt !important;
+      }
+
+      .print-section {
+        margin-bottom: 12px !important;
+      }
+
+      .print-section-title {
+        font-size: 11pt !important;
+        margin-bottom: 6px !important;
+        padding-bottom: 2px !important;
+      }
+
+      .print-grid,
+      .print-grid-3 {
+        gap: 6px 15px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .print-field {
+        font-size: 9.5pt !important;
+      }
+
+      #reportView table {
+        margin-top: 6px !important;
+      }
+
+      #reportView th,
+      #reportView td {
+        padding: 5px 8px !important;
+        font-size: 9pt !important;
+      }
+
+      .signature-block {
+        margin-top: 30px !important;
+      }
+
+      .sig-line {
+        font-size: 9.5pt !important;
+      }
+    }
+
+    /* Signature Pad Styling */
+    .signature-pad-wrapper {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background-color: #ffffff;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      margin-top: 8px;
+    }
+
+    .signature-pad-canvas {
+      border: 1px dashed #cbd5e1;
+      border-radius: 6px;
+      cursor: crosshair;
+      background-color: #f8fafc;
+      touch-action: none;
+      width: 100%;
+      height: 150px;
+    }
+
+    .signature-pad-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .sig-watermark {
+      position: absolute;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      pointer-events: none;
+      align-self: center;
+      top: 50%;
+      transform: translateY(-50%);
+      font-style: italic;
+    }
+
+    /* MOBILE RESPONSIVE STYLES */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .container {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+      
+      .header-banner {
+        padding: 20px 15px;
+      }
+      
+      .header-banner h1 {
+        font-size: 1.6rem;
+      }
+      
+      .header-banner p {
+        font-size: 0.95rem;
+      }
+      
+      form {
+        padding: 20px 15px;
+      }
+      
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+      }
+      
+      /* Make table cells readable on mobile by wrapping content or adding padding */
+      th, td {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+      }
+      
+      .checkbox-group {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .radio-label {
+        font-size: 0.85rem;
+      }
+      
+      /* Action buttons stack on mobile */
+      .btn-container {
+        flex-direction: column-reverse;
+        gap: 10px;
+        margin-top: 30px;
+        padding-top: 20px;
+      }
+      
+      .btn {
+        width: 100%;
+        padding: 14px 20px; /* larger tap target */
+        font-size: 0.95rem;
+      }
+      
+      /* Signature Pad mobile adjustments */
+      .signature-pad-canvas {
+        height: 180px; /* slightly taller for easier finger drawing */
+      }
+      
+      /* Report screen on mobile */
+      #reportView {
+        padding: 15px;
+      }
+      
+      .print-grid, .print-grid-3 {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      
+      .signature-block {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+      }
+      
+      .sig-line {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <h3 id="loaderText">डेटा सबमिट किया जा रहा है, कृपया प्रतीक्षा करें...</h3>
+  </div>
+
+  <div class="container">
+
+    <!-- BRANDING HEADER (SCREEN ONLY) -->
+    <div class="header-banner no-print">
+      <h1 id="screenTitle">जनगणना निरीक्षण फील्ड रिपोर्ट</h1>
+      <p id="screenSubtitle">Supervisor / Charge Officer / Field Trainer Portal</p>
+      <span class="badge" id="roleBadge">Official Portal</span>
+    </div>
+
+    <!-- 1. INPUT FORM SCREEN -->
+    <div id="formView">
+      <form id="inspectionForm" onsubmit="handleFormSubmit(event)">
+
+        <!-- SECTION 1: सामान्य जानकारी -->
+        <div class="section-title">1. सामान्य जानकारी (General Information)</div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="inspector_role">निरीक्षक का पद (Role) <span>*</span></label>
+            <select id="inspector_role" name="inspector_role" required onchange="updateRoleUI()">
+              <option value="">-- पद चुनें --</option>
+              <option value="Supervisor (पर्यवेक्षक)">Supervisor (पर्यवेक्षक)</option>
+              <option value="Charge Officer (चार्ज अधिकारी)">Charge Officer (चार्ज अधिकारी)</option>
+              <option value="Field Trainer (फील्ड ट्रेनर)">Field Trainer (फील्ड ट्रेनर)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="inspector_name">निरीक्षक का नाम (Inspector Name) <span>*</span></label>
+            <input type="text" id="inspector_name" name="inspector_name" placeholder="अपना नाम दर्ज करें" required>
+          </div>
+
+          <div class="form-group">
+            <label for="inspection_date">निरीक्षण की तिथि (Inspection Date) <span>*</span></label>
+            <input type="date" id="inspection_date" name="inspection_date" required>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="district">राज्य/जिला (State/District) <span>*</span></label>
+            <input type="text" id="district" name="district" value="अजमेर" placeholder="जैसे: राजस्थान / भीलवाड़ा"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="block">तहसील/ब्लॉक/वार्ड (Tehsil/Block/Ward) <span>*</span></label>
+            <input type="text" id="block" name="block" value="भिनाय" placeholder="तहसील या वार्ड दर्ज करें" required>
+          </div>
+
+          <div class="form-group">
+            <label for="eb_number">गणना ब्लॉक नंबर (EB Number) <span>*</span></label>
+            <input type="text" id="eb_number" name="eb_number" placeholder="EB Number दर्ज करें" required>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label for="enumerator_name">प्रगणक का नाम (Enumerator Name) <span>*</span></label>
+            <input type="text" id="enumerator_name" name="enumerator_name" placeholder="प्रगणक का नाम लिखें" required>
+          </div>
+
+          <div class="form-group">
+            <label for="supervisor_name">पर्यवेक्षक का नाम (Supervisor Name) <span>*</span></label>
+            <input type="text" id="supervisor_name" name="supervisor_name" placeholder="पर्यवेक्षक का नाम लिखें"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="supervisor_circle_no">पर्यवेक्षक सर्कल नंबर (Supervisor Circle No.) <span>*</span></label>
+            <input type="text" id="supervisor_circle_no" name="supervisor_circle_no" placeholder="सर्कल नंबर दर्ज करें"
+              required>
+          </div>
+        </div>
+
+
+        <!-- SECTION 2: कार्य की प्रगति और डेटा सत्यापन -->
+        <div class="section-title">2. कार्य की प्रगति और डेटा सत्यापन (Progress & Data Verification)</div>
+
+        <div class="progress-card">
+          <div class="grid-3">
+            <div class="form-group">
+              <label for="assigned_houses">जनगणना मकान अपेक्षित (Expected) <span>*</span></label>
+              <input type="number" id="assigned_houses" name="assigned_houses" min="0" required
+                oninput="calculatePending()">
+            </div>
+
+            <div class="form-group">
+              <label for="completed_houses">अब तक पूरे किए गए घर (Completed) <span>*</span></label>
+              <input type="number" id="completed_houses" name="completed_houses" min="0" required
+                oninput="calculatePending()">
+            </div>
+
+            <div class="form-group">
+              <label for="pending_houses">बचे हुए घर (Pending)</label>
+              <input type="number" id="pending_houses" name="pending_houses" readonly
+                style="background-color: #e2e8f0; font-weight: bold;">
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom: 0;">
+            <div class="form-group">
+              <label>क्या नक़्शा (Notional Map) सही है? <span>*</span></label>
+              <div class="checkbox-group">
+                <label class="radio-label">
+                  <input type="radio" name="map_correct" value="हाँ" checked required> हाँ (Yes)
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="map_correct" value="नहीं"> नहीं (No)
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>क्या कोई घर छूटा (Missed) हुआ मिला? <span>*</span></label>
+              <div class="checkbox-group">
+                <label class="radio-label">
+                  <input type="radio" name="missed_houses" value="हाँ" required> हाँ (Yes)
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="missed_houses" value="नहीं" checked> नहीं (No)
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- SECTION 3: मुख्य सूचनाएं जो रिकॉर्ड करनी हैं -->
+        <div class="section-title">3. मुख्य सूचनाएं जो रिकॉर्ड करनी हैं (Key Checklist)</div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 5%">क्र.सं.</th>
+                <th style="width: 45%">जांच के बिंदु (Checklist Items)</th>
+                <th style="width: 25%">स्थिति (हाँ / नहीं / आंशिक) <span>*</span></th>
+                <th style="width: 25%">टिप्पणी (Remarks)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- ITEM 1 -->
+              <tr>
+                <td>1</td>
+                <td>क्या प्रगणक घर-घर जाकर ही डेटा भर रहा है?</td>
+                <td>
+                  <div class="checkbox-group">
+                    <label class="radio-label"><input type="radio" name="chk_1_status" value="हाँ" checked required>
+                      हाँ</label>
+                    <label class="radio-label"><input type="radio" name="chk_1_status" value="नहीं"> नहीं</label>
+                    <label class="radio-label"><input type="radio" name="chk_1_status" value="आंशिक"> आंशिक</label>
+                  </div>
+                </td>
+                <td><input type="text" name="chk_1_remarks" placeholder="रिमार्क लिखें"></td>
+              </tr>
+              <!-- ITEM 2 -->
+              <tr>
+                <td>2</td>
+                <td>क्या मकान सूचीकरण (Houselisting) सही है?</td>
+                <td>
+                  <div class="checkbox-group">
+                    <label class="radio-label"><input type="radio" name="chk_2_status" value="हाँ" checked required>
+                      हाँ</label>
+                    <label class="radio-label"><input type="radio" name="chk_2_status" value="नहीं"> नहीं</label>
+                    <label class="radio-label"><input type="radio" name="chk_2_status" value="आंशिक"> आंशिक</label>
+                  </div>
+                </td>
+                <td><input type="text" name="chk_2_remarks" placeholder="रिमार्क लिखें"></td>
+              </tr>
+              <!-- ITEM 3 -->
+              <tr>
+                <td>3</td>
+                <td>परिवार के मुखिया का नाम सही दर्ज है?</td>
+                <td>
+                  <div class="checkbox-group">
+                    <label class="radio-label"><input type="radio" name="chk_3_status" value="हाँ" checked required>
+                      हाँ</label>
+                    <label class="radio-label"><input type="radio" name="chk_3_status" value="नहीं"> नहीं</label>
+                    <label class="radio-label"><input type="radio" name="chk_3_status" value="आंशिक"> आंशिक</label>
+                  </div>
+                </td>
+                <td><input type="text" name="chk_3_remarks" placeholder="रिमार्क लिखें"></td>
+              </tr>
+              <!-- ITEM 4 -->
+              <tr>
+                <td>4</td>
+                <td>परिवार के सदस्यों की संख्या और लिंग सही है?</td>
+                <td>
+                  <div class="checkbox-group">
+                    <label class="radio-label"><input type="radio" name="chk_4_status" value="हाँ" checked required>
+                      हाँ</label>
+                    <label class="radio-label"><input type="radio" name="chk_4_status" value="नहीं"> नहीं</label>
+                    <label class="radio-label"><input type="radio" name="chk_4_status" value="आंशिक"> आंशिक</label>
+                  </div>
+                </td>
+                <td><input type="text" name="chk_4_remarks" placeholder="रिमार्क लिखें"></td>
+              </tr>
+              <!-- ITEM 5 -->
+              <tr>
+                <td>5</td>
+                <td>मोबाइल नंबर/पहचान पत्र स्वेच्छा से लिया गया?</td>
+                <td>
+                  <div class="checkbox-group">
+                    <label class="radio-label"><input type="radio" name="chk_5_status" value="हाँ" checked required>
+                      हाँ</label>
+                    <label class="radio-label"><input type="radio" name="chk_5_status" value="नहीं"> नहीं</label>
+                    <label class="radio-label"><input type="radio" name="chk_5_status" value="आंशिक"> आंशिक</label>
+                  </div>
+                </td>
+                <td><input type="text" name="chk_5_remarks" placeholder="रिमार्क लिखें"></td>
+              </tr>
+              <!-- ITEM 6 -->
+              <tr>
+                <td>6</td>
+                <td>क्या लोग जानकारी देने में सहयोग कर रहे हैं?</td>
+                <td>
+                  <div class="checkbox-group">
+                    <label class="radio-label"><input type="radio" name="chk_6_status" value="हाँ" checked required>
+                      हाँ</label>
+                    <label class="radio-label"><input type="radio" name="chk_6_status" value="नहीं"> नहीं</label>
+                    <label class="radio-label"><input type="radio" name="chk_6_status" value="आंशिक"> आंशिक</label>
+                  </div>
+                </td>
+                <td><input type="text" name="chk_6_remarks" placeholder="रिमार्क लिखें"></td>
+              </tr>
+              <!-- ITEM 7 -->
+              <tr>
+                <td>7</td>
+                <td>डिजिटल ऐप/किट सही से काम कर रही है?</td>
+                <td>
+                  <div class="checkbox-group">
+                    <label class="radio-label"><input type="radio" name="chk_7_status" value="हाँ" checked required>
+                      हाँ</label>
+                    <label class="radio-label"><input type="radio" name="chk_7_status" value="नहीं"> नहीं</label>
+                    <label class="radio-label"><input type="radio" name="chk_7_status" value="आंशिक"> आंशिक</label>
+                  </div>
+                </td>
+                <td><input type="text" name="chk_7_remarks" placeholder="रिमार्क लिखें"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <!-- SECTION 4: फील्ड से प्राप्त शिकायतें -->
+        <div class="section-title">4. फील्ड से प्राप्त शिकायतें (Complaints Received)</div>
+        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px; margin-top: -10px;">(ऐप न चलना, लोगों का
+          सहयोग न करना, सीमा विवाद आदि दर्ज करें)</p>
+
+        <div class="list-inputs">
+          <div class="list-item-input">
+            <span class="list-item-number">1.</span>
+            <input type="text" id="complaint_1" name="complaint_1" placeholder="शिकायत 1 दर्ज करें (वैकल्पिक)">
+          </div>
+          <div class="list-item-input">
+            <span class="list-item-number">2.</span>
+            <input type="text" id="complaint_2" name="complaint_2" placeholder="शिकायत 2 दर्ज करें (वैकल्पिक)">
+          </div>
+          <div class="list-item-input">
+            <span class="list-item-number">3.</span>
+            <input type="text" id="complaint_3" name="complaint_3" placeholder="शिकायत 3 दर्ज करें (वैकल्पिक)">
+          </div>
+        </div>
+
+
+        <!-- SECTION 5: निरीक्षण के दौरान मिले सुझाव -->
+        <div class="section-title">5. निरीक्षण के दौरान मिले सुझाव (Suggestions for Improvement)</div>
+
+        <div class="list-inputs">
+          <div class="list-item-input">
+            <span class="list-item-number">1.</span>
+            <input type="text" id="suggestion_1" name="suggestion_1" placeholder="सुझाव 1 दर्ज करें (वैकल्पिक)">
+          </div>
+          <div class="list-item-input">
+            <span class="list-item-number">2.</span>
+            <input type="text" id="suggestion_2" name="suggestion_2" placeholder="सुझाव 2 दर्ज करें (वैकल्पिक)">
+          </div>
+          <div class="list-item-input">
+            <span class="list-item-number">3.</span>
+            <input type="text" id="suggestion_3" name="suggestion_3" placeholder="सुझाव 3 दर्ज करें (वैकल्पिक)">
+          </div>
+        </div>
+
+
+        <!-- SECTION 6: अंतिम टिप्पणी -->
+        <div class="section-title">6. निरीक्षक की अंतिम टिप्पणी, रेटिंग व हस्ताक्षर (Final Rating & Signature)</div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>समग्र फीडबैक (Overall Rating) <span>*</span></label>
+            <div class="checkbox-group"
+              style="margin-top: 5px; flex-direction: column; gap: 12px; align-items: flex-start;">
+              <label class="radio-label">
+                <input type="radio" name="overall_rating" value="उत्कृष्ट" required> उत्कृष्ट (Excellent)
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="overall_rating" value="संतोषजनक"> संतोषजनक (Satisfactory)
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="overall_rating" value="सुधार की आवश्यकता"> सुधार की आवश्यकता (Needs
+                Improvement)
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>निरीक्षक के हस्ताक्षर (Inspector Signature) <span>*</span></label>
+            <div class="signature-pad-wrapper">
+              <div style="position: relative; width: 100%; height: 150px; display: flex; justify-content: center;">
+                <canvas id="signature-pad" class="signature-pad-canvas" width="450" height="150"></canvas>
+                <div id="sig-instruction" class="sig-watermark">यहाँ माउस या टच द्वारा हस्ताक्षर करें (Draw signature
+                  here)</div>
+              </div>
+              <div class="signature-pad-actions">
+                <button type="button" class="btn btn-secondary"
+                  style="padding: 6px 14px; font-size: 0.85rem; font-weight: 500;" onclick="clearSignature()">
+                  🗑️ हस्ताक्षर मिटाएं (Clear)
+                </button>
+              </div>
+              <input type="hidden" id="signature_base64" name="signature_base64" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM BUTTONS -->
+        <div class="btn-container">
+          <button type="reset" class="btn btn-secondary">रीसेट करें (Reset)</button>
+          <button type="submit" class="btn btn-primary">
+            सेव और रिपोर्ट जनरेट करें (Submit & Generate Report)
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 2. REPORT PREVIEW / PRINT SCREEN -->
+    <div id="reportView">
+
+      <div class="success-alert">
+        <strong>✓ सफलता:</strong> रिपोर्ट सफलतापूर्वक सुरक्षित कर दी गई है! आप नीचे दी गई रिपोर्ट का प्रिंटआउट ले सकते
+        हैं।
+      </div>
+
+      <!-- PRINT HEADING -->
+      <div class="print-header">
+        <h1 id="printReportTitle">जनगणना निरीक्षण फील्ड रिपोर्ट</h1>
+        <p>भारत सरकार - जनगणना कार्य / Govt. of India - Census Operations</p>
+        <p style="margin-top: 5px; font-weight: bold;" id="printReportSubtitle"></p>
+      </div>
+
+      <!-- PRINT SECTION 1: सामान्य जानकारी -->
+      <div class="print-section">
+        <div class="print-section-title">1. सामान्य जानकारी (General Information)</div>
+        <div class="print-grid-3">
+          <div class="print-field"><strong>निरीक्षक का पद:</strong> <span id="r_role"></span></div>
+          <div class="print-field"><strong>निरीक्षक का नाम:</strong> <span id="r_name"></span></div>
+          <div class="print-field"><strong>निरीक्षण तिथि:</strong> <span id="r_date"></span></div>
+        </div>
+        <div class="print-grid-3">
+          <div class="print-field"><strong>राज्य/जिला:</strong> <span id="r_district"></span></div>
+          <div class="print-field"><strong>ब्लॉक/तहसील/वार्ड:</strong> <span id="r_block"></span></div>
+          <div class="print-field"><strong>गणना ब्लॉक (EB) सं.:</strong> <span id="r_eb"></span></div>
+        </div>
+        <div class="print-grid-3">
+          <div class="print-field"><strong>प्रगणक (Enumerator):</strong> <span id="r_enumerator"></span></div>
+          <div class="print-field"><strong>पर्यवेक्षक (Supervisor):</strong> <span id="r_supervisor"></span></div>
+          <div class="print-field"><strong>पर्यवेक्षक सर्कल नंबर:</strong> <span id="r_supervisor_circle"></span></div>
+        </div>
+      </div>
+
+      <!-- PRINT SECTION 2: प्रगति -->
+      <div class="print-section">
+        <div class="print-section-title">2. कार्य की प्रगति और डेटा सत्यापन (Progress & Data Verification)</div>
+        <div class="print-grid-3">
+          <div class="print-field"><strong>जनगणना मकान अपेक्षित:</strong> <span id="r_assigned"></span></div>
+          <div class="print-field"><strong>पूरे किए गए घर:</strong> <span id="r_completed"></span></div>
+          <div class="print-field"><strong>लंबित/बचे हुए घर:</strong> <span id="r_pending"></span></div>
+        </div>
+        <div class="print-grid" style="margin-top: 10px;">
+          <div class="print-field"><strong>क्या नक़्शा सही है?:</strong> <span id="r_map"></span></div>
+          <div class="print-field"><strong>क्या कोई घर छूटा?:</strong> <span id="r_missed"></span></div>
+        </div>
+      </div>
+
+      <!-- PRINT SECTION 3: चैकलिस्ट -->
+      <div class="print-section">
+        <div class="print-section-title">3. मुख्य सूचनाएं जो रिकॉर्ड की गईं (Checklist Summary)</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 8%">क्र.सं.</th>
+              <th style="width: 52%">जांच के बिंदु</th>
+              <th style="width: 15%; text-align: center;">स्थिति</th>
+              <th style="width: 25%">टिप्पणी</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>क्या प्रगणक घर-घर जाकर ही डेटा भर रहा है?</td>
+              <td style="text-align: center;" id="r_chk_1"></td>
+              <td id="r_chk_1_rem"></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>क्या मकान सूचीकरण (Houselisting) सही है?</td>
+              <td style="text-align: center;" id="r_chk_2"></td>
+              <td id="r_chk_2_rem"></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>परिवार के मुखिया का नाम सही दर्ज है?</td>
+              <td style="text-align: center;" id="r_chk_3"></td>
+              <td id="r_chk_3_rem"></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>परिवार के सदस्यों की संख्या और लिंग सही है?</td>
+              <td style="text-align: center;" id="r_chk_4"></td>
+              <td id="r_chk_4_rem"></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>मोबाइल नंबर/पहचान पत्र स्वेच्छा से लिया गया?</td>
+              <td style="text-align: center;" id="r_chk_5"></td>
+              <td id="r_chk_5_rem"></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>क्या लोग जानकारी देने में सहयोग कर रहे हैं?</td>
+              <td style="text-align: center;" id="r_chk_6"></td>
+              <td id="r_chk_6_rem"></td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>डिजिटल ऐप/किट सही से काम कर रही है?</td>
+              <td style="text-align: center;" id="r_chk_7"></td>
+              <td id="r_chk_7_rem"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PRINT SECTION 4: शिकायतें -->
+      <div class="print-section" id="print_complaints_section">
+        <div class="print-section-title">4. फील्ड से प्राप्त शिकायतें (Complaints Received)</div>
+        <ol style="margin-left: 20px;" id="r_complaints_list">
+          <!-- Dynamically populated -->
+        </ol>
+      </div>
+
+      <!-- PRINT SECTION 5: सुझाव -->
+      <div class="print-section" id="print_suggestions_section">
+        <div class="print-section-title">5. निरीक्षण के दौरान मिले सुझाव (Suggestions for Improvement)</div>
+        <ol style="margin-left: 20px;" id="r_suggestions_list">
+          <!-- Dynamically populated -->
+        </ol>
+      </div>
+
+      <!-- PRINT SECTION 6: रेटिंग व हस्ताक्षर -->
+      <div class="print-section">
+        <div class="print-section-title">6. निरीक्षक की अंतिम टिप्पणी व रेटिंग</div>
+        <div class="print-field">
+          <strong>समग्र रेटिंग (Overall Performance Rating):</strong> <span id="r_overall_rating"
+            style="text-decoration: underline; font-weight: bold;"></span>
+        </div>
+      </div>
+
+      <!-- SIGNATURE BLOCK -->
+      <div class="signature-block">
+        <div class="sig-line">
+          दिनांक (Date): <span id="r_sig_date" style="font-weight: 500;"></span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; width: 250px;">
+          <img id="r_signature_img" src="" alt="Signature"
+            style="max-width: 200px; max-height: 80px; display: none; margin-bottom: 5px;">
+          <div class="sig-line" style="width: 100%; border-top: 1px solid #000000; padding-top: 5px;">
+            निरीक्षक के हस्ताक्षर (Signature)
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS FOR SCREEN VIEW -->
+      <div class="btn-container no-print" style="margin-top: 50px;">
+        <button class="btn btn-secondary" onclick="editForm()">← वापस फॉर्म में सुधार करें</button>
+        <button class="btn btn-primary" onclick="window.print()">
+          🖨️ रिपोर्ट प्रिंट करें (Print Report)
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let isDrawing = false;
+    let isSignatureDrawn = false;
+    let sigCanvas, sigCtx;
+
+    // Set default date to today
+    document.addEventListener('DOMContentLoaded', function () {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('inspection_date').value = today;
+
+      // Initialize signature canvas
+      initSignatureCanvas();
+
+      // Clear signature canvas when form is reset
+      const form = document.getElementById('inspectionForm');
+      if (form) {
+        form.addEventListener('reset', function () {
+          clearSignature();
+        });
+      }
+    });
+
+    // Initialize signature pad
+    function initSignatureCanvas() {
+      sigCanvas = document.getElementById('signature-pad');
+      if (sigCanvas) {
+        sigCtx = sigCanvas.getContext('2d');
+
+        // Setup stroke styling
+        sigCtx.strokeStyle = '#0f172a'; // Deep Navy slate
+        sigCtx.lineWidth = 3;
+        sigCtx.lineCap = 'round';
+        sigCtx.lineJoin = 'round';
+
+        // Touch events for mobile/tablet
+        sigCanvas.addEventListener('touchstart', startDrawing, { passive: false });
+        sigCanvas.addEventListener('touchmove', draw, { passive: false });
+        sigCanvas.addEventListener('touchend', stopDrawing);
+
+        // Mouse events for desktop
+        sigCanvas.addEventListener('mousedown', startDrawing);
+        sigCanvas.addEventListener('mousemove', draw);
+        sigCanvas.addEventListener('mouseup', stopDrawing);
+        sigCanvas.addEventListener('mouseleave', stopDrawing);
+      }
+    }
+
+    // Get canvas coords with scale matching bounding rect width/height
+    function getCanvasCoords(e) {
+      const rect = sigCanvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * (sigCanvas.width / rect.width),
+        y: (clientY - rect.top) * (sigCanvas.height / rect.height)
+      };
+    }
+
+    function startDrawing(e) {
+      e.preventDefault();
+      isDrawing = true;
+      isSignatureDrawn = true;
+
+      const instruction = document.getElementById('sig-instruction');
+      if (instruction) {
+        instruction.style.display = 'none';
+      }
+
+      const coords = getCanvasCoords(e);
+      sigCtx.beginPath();
+      sigCtx.moveTo(coords.x, coords.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const coords = getCanvasCoords(e);
+      sigCtx.lineTo(coords.x, coords.y);
+      sigCtx.stroke();
+    }
+
+    // Stop drawing
+    function stopDrawing() {
+      isDrawing = false;
+    }
+
+    function clearSignature() {
+      if (sigCtx) {
+        sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      }
+      isSignatureDrawn = false;
+      document.getElementById('signature_base64').value = '';
+
+      const instruction = document.getElementById('sig-instruction');
+      if (instruction) {
+        instruction.style.display = 'block';
+      }
+    }
+
+    // Helper to calculate pending houses
+    function calculatePending() {
+      const assigned = parseInt(document.getElementById('assigned_houses').value) || 0;
+      const completed = parseInt(document.getElementById('completed_houses').value) || 0;
+      const pending = Math.max(0, assigned - completed);
+      document.getElementById('pending_houses').value = pending;
+    }
+
+    // Update Banner title when role changes
+    function updateRoleUI() {
+      const role = document.getElementById('inspector_role').value;
+      const titleEl = document.getElementById('screenTitle');
+      const badgeEl = document.getElementById('roleBadge');
+
+      if (role) {
+        titleEl.textContent = 'जनगणना निरीक्षण रिपोर्ट - ' + role.split('(')[0].trim();
+        badgeEl.textContent = role;
+        badgeEl.style.backgroundColor = '#d97706';
+      } else {
+        titleEl.textContent = 'जनगणना निरीक्षण फील्ड रिपोर्ट';
+        badgeEl.textContent = 'Official Portal';
+        badgeEl.style.backgroundColor = '#64748b';
+      }
+    }
+
+    // Function to submit form
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      if (!isSignatureDrawn) {
+        alert('कृपया हस्ताक्षर करें (Please sign before submitting)');
+        return;
+      }
+
+      // Save signature to hidden input
+      document.getElementById('signature_base64').value = sigCanvas.toDataURL('image/png');
+
+      // Calculate pending one more time
+      calculatePending();
+
+      const form = document.getElementById('inspectionForm');
+      const formData = new FormData(form);
+      const dataObj = {};
+
+      formData.forEach((value, key) => {
+        dataObj[key] = value;
+      });
+
+      // Capture all radio values correctly
+      const radios = ['map_correct', 'missed_houses', 'overall_rating', 'chk_1_status', 'chk_2_status', 'chk_3_status', 'chk_4_status', 'chk_5_status', 'chk_6_status', 'chk_7_status'];
+      radios.forEach(name => {
+        const checked = form.querySelector(`input[name="${name}"]:checked`);
+        dataObj[name] = checked ? checked.value : '';
+      });
+
+      // Include pending explicitly since read-only input might not get captured by some FormData configurations
+      dataObj['pending_houses'] = document.getElementById('pending_houses').value;
+
+      // Show loader
+      document.getElementById('loader').style.display = 'flex';
+
+      // Submit data using Google Apps Script runner, or fallback to CORS fetch if hosted externally (like GitHub Pages)
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function (response) {
+            document.getElementById('loader').style.display = 'none';
+            if (response.status === 'success') {
+              showReportView(dataObj);
+            } else {
+              alert('त्रुटि: ' + response.message);
+            }
+          })
+          .withFailureHandler(function (error) {
+            document.getElementById('loader').style.display = 'none';
+            alert('सर्वर एरर: ' + error.message);
+          })
+          .saveReport(dataObj);
+      } else {
+        // Send data directly to the Google Apps Script Web App URL via CORS fetch POST
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbzefttu2joIrCr8pHikGbwRKbrYHvFm-N-KsffQ3_5OerFDNrGdrJDSjIg4I5uefcrOiw/exec';
+        
+        fetch(webAppUrl, {
+          method: 'POST',
+          mode: 'cors',
+          redirect: 'follow',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(dataObj)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('नेटवर्क रिस्पॉन्स सही नहीं था।');
+          }
+          return response.json();
+        })
+        .then(response => {
+          document.getElementById('loader').style.display = 'none';
+          if (response.status === 'success') {
+            showReportView(dataObj);
+          } else {
+            alert('त्रुटि: ' + response.message);
+          }
+        })
+        .catch(error => {
+          document.getElementById('loader').style.display = 'none';
+          alert('डेटा सेव करने में त्रुटि आई: ' + error.message + '\nकृपया इंटरनेट कनेक्शन चेक करें या पुनः प्रयास करें।');
+          console.error('Fetch Error:', error);
+        });
+      }
+    }
+
+    // Display compiled preview report
+    function showReportView(data) {
+      // Toggle screens
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('reportView').style.display = 'block';
+
+      // Set print header subtitle
+      document.getElementById('printReportSubtitle').textContent = 'पद: ' + data.inspector_role + ' | प्रगणक: ' + data.enumerator_name;
+
+      // Format inspection date to DD-MM-YY
+      let formattedDate = data.inspection_date;
+      if (data.inspection_date) {
+        const parts = data.inspection_date.split('-');
+        if (parts.length === 3) {
+          formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0].slice(-2);
+        }
+      }
+
+      // Populate text fields
+      document.getElementById('r_role').textContent = data.inspector_role;
+      document.getElementById('r_name').textContent = data.inspector_name;
+      document.getElementById('r_date').textContent = formattedDate;
+      document.getElementById('r_sig_date').textContent = formattedDate;
+      document.getElementById('r_district').textContent = data.district;
+      document.getElementById('r_block').textContent = data.block;
+      document.getElementById('r_eb').textContent = data.eb_number;
+      document.getElementById('r_enumerator').textContent = data.enumerator_name;
+      document.getElementById('r_supervisor').textContent = data.supervisor_name;
+      document.getElementById('r_supervisor_circle').textContent = data.supervisor_circle_no;
+
+      document.getElementById('r_assigned').textContent = data.assigned_houses;
+      document.getElementById('r_completed').textContent = data.completed_houses;
+      document.getElementById('r_pending').textContent = data.pending_houses;
+      document.getElementById('r_map').textContent = data.map_correct;
+      document.getElementById('r_missed').textContent = data.missed_houses;
+
+      // Populate signature image
+      const sigImg = document.getElementById('r_signature_img');
+      if (data.signature_base64) {
+        sigImg.src = data.signature_base64;
+        sigImg.style.display = 'block';
+      } else {
+        sigImg.style.display = 'none';
+      }
+
+      // Populate checklist values
+      for (let i = 1; i <= 7; i++) {
+        document.getElementById('r_chk_' + i).textContent = data['chk_' + i + '_status'];
+        document.getElementById('r_chk_' + i + '_rem').textContent = data['chk_' + i + '_remarks'] || '-';
+      }
+
+      // Populate complaints list
+      const complaintsList = document.getElementById('r_complaints_list');
+      complaintsList.innerHTML = '';
+      let complaintsCount = 0;
+      for (let i = 1; i <= 3; i++) {
+        const val = data['complaint_' + i];
+        if (val && val.trim() !== '') {
+          const li = document.createElement('li');
+          li.textContent = val;
+          complaintsList.appendChild(li);
+          complaintsCount++;
+        }
+      }
+      document.getElementById('print_complaints_section').style.display = complaintsCount > 0 ? 'block' : 'none';
+
+      // Populate suggestions list
+      const suggestionsList = document.getElementById('r_suggestions_list');
+      suggestionsList.innerHTML = '';
+      let suggestionsCount = 0;
+      for (let i = 1; i <= 3; i++) {
+        const val = data['suggestion_' + i];
+        if (val && val.trim() !== '') {
+          const li = document.createElement('li');
+          li.textContent = val;
+          suggestionsList.appendChild(li);
+          suggestionsCount++;
+        }
+      }
+      document.getElementById('print_suggestions_section').style.display = suggestionsCount > 0 ? 'block' : 'none';
+
+      // Set overall rating
+      document.getElementById('r_overall_rating').textContent = data.overall_rating;
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    // Go back to edit form
+    function editForm() {
+      document.getElementById('formView').style.display = 'block';
+      document.getElementById('reportView').style.display = 'none';
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+
+</html>
