@@ -496,8 +496,12 @@
         display: none !important;
       }
 
-      /* Remove margins, shadows, and paddings for paper print layout */
+      /* Hide reportView by default in print mode */
       #reportView {
+        display: none !important;
+      }
+      
+      body.printing-report #reportView {
         display: block !important;
         padding: 0 !important;
         margin: 0 !important;
@@ -1710,8 +1714,8 @@
 
       <!-- ACTIONS FOR SCREEN VIEW -->
       <div class="btn-container no-print" style="margin-top: 50px;">
-        <button class="btn btn-secondary" onclick="editForm()">← वापस फॉर्म में सुधार करें</button>
-        <button class="btn btn-primary" onclick="window.print()">
+        <button type="button" class="btn btn-secondary" onclick="editForm()">← वापस फॉर्म में सुधार करें</button>
+        <button type="button" class="btn btn-primary" onclick="printReport()">
           🖨️ रिपोर्ट प्रिंट करें (Print Report)
         </button>
       </div>
@@ -4365,6 +4369,19 @@
           document.body.classList.remove('printing-admin');
           activeTabContent.classList.remove('printing-active');
           document.querySelectorAll('.print-only-section').forEach(h => h.style.display = 'none');
+        }, 500);
+      }, 150);
+    }
+
+    // Print functionality for Individual Submission Report
+    function printReport() {
+      document.body.classList.add('printing-report');
+      
+      setTimeout(() => {
+        window.print();
+        
+        setTimeout(() => {
+          document.body.classList.remove('printing-report');
         }, 500);
       }, 150);
     }
