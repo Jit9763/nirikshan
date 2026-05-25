@@ -1038,6 +1038,170 @@
         color: #000000 !important;
       }
     }
+
+    /* ADMIN VIEW & TABS STYLING */
+    .admin-tab-btn {
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      background-color: #f1f5f9;
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-right: 4px;
+      font-family: inherit;
+    }
+    .admin-tab-btn:hover {
+      background-color: #e2e8f0;
+      color: var(--text-dark);
+    }
+    .admin-tab-btn.active {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      border-color: var(--primary-color);
+    }
+    
+    /* Progress bar styling in HLB report */
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e2e8f0;
+      border-radius: 10px;
+      height: 12px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--success-color);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+    .progress-bar-fill.pending {
+      background-color: var(--accent-color);
+    }
+    .progress-bar-fill.empty {
+      background-color: #cbd5e1;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+    .badge-status.success {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .badge-status.warning {
+      background-color: #fffbeb;
+      color: #78350f;
+    }
+    .badge-status.danger {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    
+    /* Hide printing items by default on screen */
+    .print-only-section {
+      display: none;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm 12mm 15mm !important;
+      }
+
+      html, body {
+        height: auto !important;
+        min-height: 100% !important;
+        overflow: visible !important;
+      }
+
+      /* Hide regular screen sections when printing admin view */
+      body.printing-admin #formView,
+      body.printing-admin #reportView,
+      body.printing-admin .header-banner,
+      body.printing-admin .no-print,
+      body.printing-admin #adminPasswordModal,
+      body.printing-admin #roleModal,
+      body.printing-admin #loader {
+        display: none !important;
+      }
+      
+      body.printing-admin .container {
+        display: block !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      body.printing-admin #adminView {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      body.printing-admin .admin-tab-content {
+        display: none !important;
+      }
+
+      body.printing-admin .admin-tab-content.printing-active {
+        display: block !important;
+      }
+
+      body.printing-admin .print-only-section {
+        display: block !important;
+      }
+
+      body.printing-admin table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        margin-top: 15px !important;
+        border: 1px solid #000000 !important;
+      }
+
+      body.printing-admin th,
+      body.printing-admin td {
+        border: 1px solid #000000 !important;
+        padding: 6px 8px !important;
+        font-size: 9pt !important;
+        color: #000000 !important;
+      }
+
+      body.printing-admin th {
+        background-color: #f2f2f2 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+      }
+
+      body.printing-admin .table-responsive {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      body.printing-admin tr {
+        page-break-inside: avoid !important;
+      }
+
+      body.printing-admin .attendance-section-box {
+        margin-bottom: 25px !important;
+      }
+    }
   </style>
 </head>
 
@@ -1055,7 +1219,10 @@
     <div class="header-banner no-print">
       <h1 id="screenTitle">जनगणना निरीक्षण फील्ड रिपोर्ट</h1>
       <p id="screenSubtitle">Supervisor / Charge Officer / Field Trainer Portal</p>
-      <span class="badge" id="roleBadge">Official Portal</span>
+      <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+        <span class="badge" id="roleBadge">Official Portal</span>
+        <button type="button" class="btn" style="background-color: var(--accent-color); color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; text-transform: uppercase; border: none; height: auto;" onclick="promptAdminPassword()">🔑 Admin Panel</button>
+      </div>
     </div>
 
     <!-- 1. INPUT FORM SCREEN -->
@@ -1550,6 +1717,259 @@
 
     </div>
 
+    <!-- 3. ADMIN DASHBOARD VIEW -->
+    <div id="adminView" style="display: none; padding: 30px;">
+      <!-- Admin Header -->
+      <div class="no-print" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+        <div>
+          <h2 style="font-family: var(--font-hindi); color: var(--primary-color); font-size: 1.6rem;">📊 एडमिन डैशबोर्ड (Admin Dashboard)</h2>
+          <p style="font-size: 0.9rem; color: #64748b;">शीट्स से प्राप्त वास्तविक समय की डेटा रिपोर्ट्स</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="refreshAdminData()" style="padding: 8px 16px; font-size: 0.9rem;">🔄 डेटा रीफ्रेश</button>
+          <button type="button" class="btn btn-primary" onclick="exitAdminView()" style="padding: 8px 16px; font-size: 0.9rem; background-color: var(--danger-color); box-shadow: none;">🚪 लॉगआउट</button>
+        </div>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="no-print" style="display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 25px; gap: 5px; flex-wrap: wrap;">
+        <button type="button" class="admin-tab-btn active" onclick="switchAdminTab('tab_supervisor')" id="btn_tab_supervisor">👤 सुपरवाइजर व ट्रेनर रिपोर्ट</button>
+        <button type="button" class="admin-tab-btn" onclick="switchAdminTab('tab_hlb')" id="btn_tab_hlb">🏠 HLB 1-242 प्रगति</button>
+        <button type="button" class="admin-tab-btn" onclick="switchAdminTab('tab_attendance')" id="btn_tab_attendance">📅 दैनिक निरीक्षण उपस्थिति</button>
+      </div>
+
+      <!-- TAB 1: Supervisor / Trainer Report -->
+      <div id="tab_supervisor" class="admin-tab-content">
+        <!-- Stats Summary Card Row -->
+        <div class="grid-3 no-print" style="margin-bottom: 25px;">
+          <div class="info-block-box" style="background-color: #eff6ff; border-color: #bfdbfe;">
+            <div style="font-size: 0.85rem; color: #1e3a8a; font-weight: 600; text-transform: uppercase;">कुल निरीक्षण (Total Inspections)</div>
+            <div id="stat_total_inspections" style="font-size: 2rem; font-weight: 700; color: #1e3a8a; margin-top: 5px;">0</div>
+          </div>
+          <div class="info-block-box" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+            <div style="font-size: 0.85rem; color: #14532d; font-weight: 600; text-transform: uppercase;">कुल पूरे किए गए घर (Completed)</div>
+            <div id="stat_total_completed" style="font-size: 2rem; font-weight: 700; color: #14532d; margin-top: 5px;">0</div>
+          </div>
+          <div class="info-block-box" style="background-color: #fffbeb; border-color: #fef3c7;">
+            <div style="font-size: 0.85rem; color: #78350f; font-weight: 600; text-transform: uppercase;">कुल बचे हुए घर (Pending)</div>
+            <div id="stat_total_pending" style="font-size: 2rem; font-weight: 700; color: #78350f; margin-top: 5px;">0</div>
+          </div>
+        </div>
+
+        <div class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; gap: 10px; flex-grow: 1; max-width: 600px;">
+            <input type="text" id="sup_search" placeholder="खोजें (सुपरवाइजर/ट्रेनर/प्रगणक का नाम)" oninput="filterSupervisorReport()" style="flex-grow: 1;">
+            <select id="sup_role_filter" onchange="filterSupervisorReport()" style="width: 200px;">
+              <option value="">सभी पद (All Roles)</option>
+              <option value="Supervisor">Supervisor (पर्यवेक्षक)</option>
+              <option value="Field Trainer">Field Trainer (फील्ड ट्रेनर)</option>
+              <option value="Charge Officer">Charge Officer (चार्ज अधिकारी)</option>
+              <option value="Other">Other (अन्य)</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="printActiveReport('print_supervisor_report')" style="padding: 8px 16px; font-size: 0.9rem;">
+            🖨️ PDF / प्रिंट रिपोर्ट
+          </button>
+        </div>
+
+        <!-- Print-only header -->
+        <div class="print-only-section" id="print_supervisor_header" style="display: none;">
+          <div class="print-header">
+            <h1>जनगणना निरीक्षण - सुपरवाइजर व फील्ड ट्रेनर रिपोर्ट</h1>
+            <p>भारत सरकार - जनगणना कार्य / Govt. of India - Census Operations</p>
+            <p style="margin-top: 5px; font-weight: bold;">रिपोर्ट प्रकार: नवीनतम निरीक्षण रिपोर्ट (सर्कल अनुसार)</p>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table id="supervisor_table">
+            <thead>
+              <tr>
+                <th>क्र.सं.</th>
+                <th>पद (Role)</th>
+                <th>निरीक्षक का नाम</th>
+                <th>सर्कल नं.</th>
+                <th>HLB नं.</th>
+                <th>प्रगणक</th>
+                <th>अपेक्षित घर</th>
+                <th>पूर्ण</th>
+                <th>लंबित</th>
+                <th>रेटिंग</th>
+                <th>दिनांक</th>
+              </tr>
+            </thead>
+            <tbody id="supervisor_table_body">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: HLB 1 to 242 House Progress -->
+      <div id="tab_hlb" class="admin-tab-content" style="display: none;">
+        <!-- Stats Summary Row -->
+        <div class="grid-3 no-print" style="margin-bottom: 25px;">
+          <div class="info-block-box" style="background-color: #eff6ff; border-color: #bfdbfe;">
+            <div style="font-size: 0.85rem; color: #1e3a8a; font-weight: 600; text-transform: uppercase;">कुल HLBs (Total HLBs)</div>
+            <div style="font-size: 2rem; font-weight: 700; color: #1e3a8a; margin-top: 5px;">242</div>
+          </div>
+          <div class="info-block-box" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+            <div style="font-size: 0.85rem; color: #14532d; font-weight: 600; text-transform: uppercase;">निरीक्षित HLBs (Inspected)</div>
+            <div id="stat_hlb_inspected" style="font-size: 2rem; font-weight: 700; color: #14532d; margin-top: 5px;">0</div>
+          </div>
+          <div class="info-block-box" style="background-color: #fffbeb; border-color: #fef3c7;">
+            <div style="font-size: 0.85rem; color: #78350f; font-weight: 600; text-transform: uppercase;">प्रगति प्रतिशत (Completion Rate)</div>
+            <div id="stat_hlb_percent" style="font-size: 2rem; font-weight: 700; color: #78350f; margin-top: 5px;">0%</div>
+          </div>
+        </div>
+
+        <div class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; gap: 10px; flex-grow: 1; max-width: 600px;">
+            <input type="text" id="hlb_search" placeholder="खोजें (HLB नंबर, सुपरवाइजर या प्रगणक)" oninput="filterHlbReport()" style="flex-grow: 1;">
+            <select id="hlb_status_filter" onchange="filterHlbReport()" style="width: 200px;">
+              <option value="">सभी स्थिति (All Status)</option>
+              <option value="inspected">निरीक्षण हो चुका (Inspected)</option>
+              <option value="pending">निरीक्षण लंबित (Pending)</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="printActiveReport('print_hlb_report')" style="padding: 8px 16px; font-size: 0.9rem;">
+            🖨️ PDF / प्रिंट रिपोर्ट
+          </button>
+        </div>
+
+        <!-- Print-only header -->
+        <div class="print-only-section" id="print_hlb_header" style="display: none;">
+          <div class="print-header">
+            <h1>जनगणना निरीक्षण - 1 से 242 HLB प्रगति रिपोर्ट</h1>
+            <p>भारत सरकार - जनगणना कार्य / Govt. of India - Census Operations</p>
+            <p style="margin-top: 5px; font-weight: bold;" id="print_hlb_datesub"></p>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px;">
+          <table id="hlb_table">
+            <thead>
+              <tr>
+                <th>HLB नं.</th>
+                <th>सर्कल</th>
+                <th>सुपरवाइजर का नाम</th>
+                <th>प्रगणक का नाम</th>
+                <th>अपेक्षित घर (Expected)</th>
+                <th>पूर्ण घर (Completed)</th>
+                <th>बचे घर (Pending)</th>
+                <th>प्रगति % (Progress)</th>
+                <th>स्थिति (Status)</th>
+              </tr>
+            </thead>
+            <tbody id="hlb_table_body">
+              <!-- Dynamically Populated 1 to 242 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: Daily Attendance / Inspection Status -->
+      <div id="tab_attendance" class="admin-tab-content" style="display: none;">
+        <div class="no-print" style="background-color: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 25px;">
+          <h4 style="margin-bottom: 15px; color: var(--primary-color);">📅 तिथि अनुसार निरीक्षण करने व नहीं करने वालों की रिपोर्ट</h4>
+          <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="attendance_date" style="font-size: 0.85rem;">निरीक्षण दिनांक चुनें (Select Date):</label>
+              <input type="date" id="attendance_date" onchange="generateAttendanceReport()" style="width: 200px; margin-top: 5px;">
+            </div>
+            <div style="flex-grow: 1; display: flex; justify-content: flex-end; align-items: flex-end; height: 100%;">
+              <button type="button" class="btn btn-primary" onclick="printActiveReport('print_attendance_report')" style="padding: 10px 20px;">
+                🖨️ PDF / प्रिंट उपस्थिति रिपोर्ट
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Print-only header -->
+        <div class="print-only-section" id="print_attendance_header" style="display: none;">
+          <div class="print-header">
+            <h1>जनगणना निरीक्षण - दैनिक रिपोर्ट (निरीक्षण अनुपस्थिति/उपस्थिति)</h1>
+            <p>भारत सरकार - जनगणना कार्य / Govt. of India - Census Operations</p>
+            <p style="margin-top: 5px; font-weight: bold;" id="print_attendance_date_str"></p>
+          </div>
+        </div>
+
+        <!-- Attendance Content Layout -->
+        <div style="display: flex; flex-direction: column; gap: 30px;" id="attendance_container_layout">
+          
+          <!-- 1. Supervisors Report Table (1 to 39) -->
+          <div class="attendance-section-box">
+            <h3 style="color: var(--primary-color); font-family: var(--font-hindi); margin-bottom: 12px; border-left: 4px solid var(--accent-color); padding-left: 10px; font-size: 1.25rem;">
+              👤 सुपरवाइजर दैनिक रिपोर्ट (सर्कल 1 से 39)
+            </h3>
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 10px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 8%">क्र.सं.</th>
+                    <th style="width: 12%">सर्कल नं.</th>
+                    <th style="width: 35%">सुपरवाइजर का नाम</th>
+                    <th style="width: 25%">HLB नंबर</th>
+                    <th style="width: 20%">स्थिति (Status)</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance_supervisor_body">
+                  <!-- Will be populated dynamically for Circles 1 to 39 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 2. Field Trainers Report Table -->
+          <div class="attendance-section-box">
+            <h3 style="color: var(--primary-color); font-family: var(--font-hindi); margin-bottom: 12px; border-left: 4px solid var(--accent-color); padding-left: 10px; font-size: 1.25rem;">
+              🎓 फील्ड ट्रेनर दैनिक रिपोर्ट
+            </h3>
+            <div class="table-responsive" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 10px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 10%">क्र.सं.</th>
+                    <th style="width: 45%">फील्ड ट्रेनर का नाम</th>
+                    <th style="width: 25%">HLB नंबर</th>
+                    <th style="width: 20%">स्थिति (Status)</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance_trainer_body">
+                  <!-- Will be populated dynamically for 4 Field Trainers -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. Absent / Did Not Inspect List (Separated below) -->
+          <div class="attendance-section-box">
+            <div style="background-color: #fee2e2; color: #991b1b; padding: 12px 16px; border-radius: 6px; font-weight: 700; font-size: 1.1rem; border: 1px solid #fecaca; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+              <span>❌ आज निरीक्षण नहीं करने वाले सुपरवाइजर व फील्ड ट्रेनर की सूची</span>
+              <span id="absent_total_badge" style="background: #991b1b; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.85rem;">0</span>
+            </div>
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 8%">क्र.सं.</th>
+                    <th style="width: 35%">नाम (Name)</th>
+                    <th style="width: 25%">पद (Role)</th>
+                    <th style="width: 17%">सर्कल नं.</th>
+                    <th style="width: 15%">स्थिति</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance_absent_body">
+                  <!-- Will be populated dynamically for non-inspecting staff -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 
     <!-- ROLE SELECTION MODAL -->
@@ -1642,8 +2062,9 @@
 
           </div>
         </div>
-        <div class="modal-footer">
-          <button id="modal_confirm_btn" class="btn btn-primary" disabled onclick="confirmRoleSelection()">
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; padding: 20px 30px; flex-wrap: wrap;">
+          <button type="button" class="btn" style="background-color: var(--accent-color); color: var(--primary-color); padding: 8px 16px; font-size: 0.9rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; height: auto;" onclick="promptAdminPassword()">🔑 Admin Panel</button>
+          <button id="modal_confirm_btn" class="btn btn-primary" disabled onclick="confirmRoleSelection()" style="width: auto; padding: 10px 20px; font-size: 1rem; border-radius: 6px; margin: 0;">
             आगे बढ़ें (Proceed) →
           </button>
         </div>
@@ -3386,6 +3807,562 @@
       
       // Close modal
       document.getElementById('roleModal').style.display = 'none';
+    }
+  </script>
+
+  <!-- ADMIN PASSWORD MODAL -->
+  <div id="adminPasswordModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>एडमिन लॉगिन (Admin Login)</h2>
+        <p>पोर्टल देखने के लिए पासवर्ड दर्ज करें</p>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <div class="form-group">
+          <label for="admin_password">सिक्योरिटी पासवर्ड (Password) <span>*</span></label>
+          <input type="password" id="admin_password" class="modal-input" placeholder="पासवर्ड दर्ज करें" onkeydown="if(event.key==='Enter') verifyAdminPassword()">
+          <p id="password_error" style="color: var(--danger-color); font-size: 0.85rem; margin-top: 8px; display: none;">गलत पासवर्ड! कृपया पुनः प्रयास करें।</p>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 15px 20px; background-color: #f8fafc;">
+        <button type="button" class="btn btn-secondary" onclick="closeAdminPasswordModal()" style="padding: 8px 16px; font-size: 0.9rem;">रद्द करें</button>
+        <button type="button" class="btn btn-primary" onclick="verifyAdminPassword()" style="padding: 8px 20px; font-size: 0.9rem; margin-left: 10px;">लॉगिन करें</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // ADMIN DASHBOARD FUNCTIONALITY
+    // ==========================================
+    let adminReportsData = [];
+    const MASTER_FIELD_TRAINERS = ["राकेश कुमार बिरावत", "दयानंद मारू", "मुकेश रावत", "गंगाविशन प्रजापत"];
+    const MASTER_SUPERVISORS = [];
+    const MASTER_STAFF = [];
+    const HLB_MASTER = {};
+
+    // Build Master Lists on Startup
+    function initAdminMasterData() {
+      // Build unique supervisors list
+      Object.keys(CENSUS_DATA).forEach(circle => {
+        const name = CENSUS_DATA[circle].supervisor;
+        if (name && !MASTER_SUPERVISORS.includes(name)) {
+          MASTER_SUPERVISORS.push(name);
+        }
+      });
+
+      // Build master staff list
+      MASTER_SUPERVISORS.forEach(name => {
+        MASTER_STAFF.push({ name: name, role: "Supervisor (पर्यवेक्षक)" });
+      });
+      MASTER_FIELD_TRAINERS.forEach(name => {
+        MASTER_STAFF.push({ name: name, role: "Field Trainer (फील्ड ट्रेनर)" });
+      });
+
+      // Initialize HLB master 1 to 242
+      for (let i = 1; i <= 242; i++) {
+        HLB_MASTER[i] = {
+          circle: "-",
+          supervisor: "-",
+          enumerator: "-"
+        };
+      }
+      // Populate HLB details from census structure
+      Object.keys(CENSUS_DATA).forEach(circleNum => {
+        const circleInfo = CENSUS_DATA[circleNum];
+        const hlbs = circleInfo.hlbs;
+        Object.keys(hlbs).forEach(hlbNum => {
+          HLB_MASTER[hlbNum] = {
+            circle: circleNum,
+            supervisor: circleInfo.supervisor,
+            enumerator: hlbs[hlbNum].enumerator
+          };
+        });
+      });
+    }
+
+    // Call initialization
+    initAdminMasterData();
+
+    // Password Prompt
+    function promptAdminPassword() {
+      document.getElementById('adminPasswordModal').style.display = 'flex';
+      document.getElementById('admin_password').value = '';
+      document.getElementById('password_error').style.display = 'none';
+      document.getElementById('admin_password').focus();
+    }
+
+    function closeAdminPasswordModal() {
+      document.getElementById('adminPasswordModal').style.display = 'none';
+    }
+
+    function verifyAdminPassword() {
+      const pwd = document.getElementById('admin_password').value;
+      if (pwd === '1520') {
+        closeAdminPasswordModal();
+        enterAdminView();
+      } else {
+        document.getElementById('password_error').style.display = 'block';
+      }
+    }
+
+    function enterAdminView() {
+      // Hide role selection modal overlay
+      document.getElementById('roleModal').style.display = 'none';
+
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('reportView').style.display = 'none';
+      document.getElementById('adminView').style.display = 'block';
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('attendance_date').value = today;
+      
+      refreshAdminData();
+    }
+
+    function exitAdminView() {
+      document.getElementById('adminView').style.display = 'none';
+      document.getElementById('formView').style.display = 'block';
+      window.scrollTo(0, 0);
+    }
+
+    function switchAdminTab(tabId) {
+      currentAdminTab = tabId;
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
+      document.getElementById(tabId).style.display = 'block';
+      
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn_' + tabId);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    let currentAdminTab = 'tab_supervisor';
+
+    // Fetch Sheets Data
+    function refreshAdminData() {
+      document.getElementById('loaderText').textContent = 'डेटा लोड किया जा रहा है, कृपया प्रतीक्षा करें...';
+      document.getElementById('loader').style.display = 'flex';
+      
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function (reports) {
+            document.getElementById('loader').style.display = 'none';
+            adminReportsData = reports || [];
+            processAndRenderReports();
+          })
+          .withFailureHandler(function (error) {
+            document.getElementById('loader').style.display = 'none';
+            alert('डेटा लोड करने में त्रुटि: ' + error.message);
+          })
+          .getReportsData();
+      } else {
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbyc226bwat0bvih-TWfx89He5HYC2O69NivHdt3KgUeuT_wXUrGzjNmwM8XpjABCvA1tg/exec';
+        fetch(webAppUrl, {
+          method: 'POST',
+          mode: 'cors',
+          redirect: 'follow',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({ action: 'getReports' })
+        })
+        .then(response => response.json())
+        .then(response => {
+          document.getElementById('loader').style.display = 'none';
+          if (response.status === 'success') {
+            adminReportsData = response.reports || [];
+            processAndRenderReports();
+          } else {
+            alert('डेटा लोड करने में त्रुटि: ' + response.message);
+          }
+        })
+        .catch(error => {
+          document.getElementById('loader').style.display = 'none';
+          alert('डेटा लोड करने में त्रुटि: ' + error.message);
+        });
+      }
+    }
+
+    // Process and display reports
+    function processAndRenderReports() {
+      // 1. Update stats cards
+      let totalInspections = adminReportsData.length;
+      let totalCompleted = 0;
+      let totalPending = 0;
+      adminReportsData.forEach(r => {
+        totalCompleted += parseInt(r.completed_houses) || 0;
+        totalPending += parseInt(r.pending_houses) || 0;
+      });
+      document.getElementById('stat_total_inspections').textContent = totalInspections;
+      document.getElementById('stat_total_completed').textContent = totalCompleted;
+      document.getElementById('stat_total_pending').textContent = totalPending;
+
+      // 2. Render Tab 1 (Supervisor / Trainer)
+      renderSupervisorTab();
+
+      // 3. Render Tab 2 (HLB Progress)
+      renderHlbTab();
+
+      // 4. Render Tab 3 (Attendance Status)
+      generateAttendanceReport();
+    }
+
+    // Tab 1: Render Supervisor & Field Trainer wise reports
+    function renderSupervisorTab() {
+      const grouped = {};
+      adminReportsData.forEach(r => {
+        const name = r.inspector_name;
+        if (!name) return;
+        if (!grouped[name]) {
+          grouped[name] = [];
+        }
+        grouped[name].push(r);
+      });
+
+      const latestReports = [];
+      Object.keys(grouped).forEach(name => {
+        const sorted = grouped[name].sort((a, b) => {
+          const timeA = new Date(a.timestamp || a.inspection_date).getTime();
+          const timeB = new Date(b.timestamp || b.inspection_date).getTime();
+          return timeB - timeA;
+        });
+        latestReports.push(sorted[0]);
+      });
+
+      latestReports.sort((a, b) => {
+        if (a.inspector_role !== b.inspector_role) {
+          return a.inspector_role.localeCompare(b.inspector_role);
+        }
+        return a.inspector_name.localeCompare(b.inspector_name);
+      });
+
+      window.cachedLatestReports = latestReports;
+      filterSupervisorReport();
+    }
+
+    function filterSupervisorReport() {
+      const searchVal = document.getElementById('sup_search').value.toLowerCase().trim();
+      const roleFilter = document.getElementById('sup_role_filter').value;
+      const tbody = document.getElementById('supervisor_table_body');
+      
+      tbody.innerHTML = '';
+      
+      if (!window.cachedLatestReports || window.cachedLatestReports.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: #64748b;">कोई डेटा उपलब्ध नहीं है।</td></tr>';
+        return;
+      }
+
+      let count = 0;
+      window.cachedLatestReports.forEach(r => {
+        const matchesSearch = 
+          r.inspector_name.toLowerCase().includes(searchVal) ||
+          (r.supervisor_name && r.supervisor_name.toLowerCase().includes(searchVal)) ||
+          (r.enumerator_name && r.enumerator_name.toLowerCase().includes(searchVal));
+        
+        const matchesRole = !roleFilter || r.inspector_role.includes(roleFilter);
+
+        if (matchesSearch && matchesRole) {
+          count++;
+          const tr = document.createElement('tr');
+          
+          let formattedDate = r.inspection_date;
+          if (r.inspection_date) {
+            const parts = r.inspection_date.split('-');
+            if (parts.length === 3) formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+          }
+
+          let ratingBadge = '';
+          if (r.overall_rating === 'उत्कृष्ट') {
+            ratingBadge = '<span class="badge-status success">उत्कृष्ट</span>';
+          } else if (r.overall_rating === 'संतोषजनक') {
+            ratingBadge = '<span class="badge-status warning">संतोषजनक</span>';
+          } else {
+            ratingBadge = '<span class="badge-status danger">सुधार की आवश्यकता</span>';
+          }
+
+          tr.innerHTML = `
+            <td>${count}</td>
+            <td><strong>${r.inspector_role.split('(')[0].trim()}</strong></td>
+            <td>${r.inspector_name}</td>
+            <td>${r.supervisor_circle_no || '-'}</td>
+            <td>HLB ${r.hlb_no || '-'}</td>
+            <td>${r.enumerator_name || '-'}</td>
+            <td>${r.assigned_houses || 0}</td>
+            <td>${r.completed_houses || 0}</td>
+            <td>${r.pending_houses || 0}</td>
+            <td>${ratingBadge}</td>
+            <td>${formattedDate || '-'}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+
+      if (count === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; color: #64748b;">कोई मेल खाता रिकॉर्ड नहीं मिला।</td></tr>';
+      }
+    }
+
+    // Tab 2: Render HLB progress
+    function renderHlbTab() {
+      const latestHlbReports = {};
+      adminReportsData.forEach(r => {
+        const hlb = r.hlb_no;
+        if (!hlb) return;
+        if (!latestHlbReports[hlb]) {
+          latestHlbReports[hlb] = [];
+        }
+        latestHlbReports[hlb].push(r);
+      });
+
+      window.hlbStatusMap = {};
+      Object.keys(latestHlbReports).forEach(hlb => {
+        const sorted = latestHlbReports[hlb].sort((a, b) => {
+          const timeA = new Date(a.timestamp || a.inspection_date).getTime();
+          const timeB = new Date(b.timestamp || b.inspection_date).getTime();
+          return timeB - timeA;
+        });
+        window.hlbStatusMap[hlb] = sorted[0];
+      });
+
+      let inspectedCount = Object.keys(window.hlbStatusMap).length;
+      document.getElementById('stat_hlb_inspected').textContent = inspectedCount;
+      document.getElementById('stat_hlb_percent').textContent = ((inspectedCount / 242) * 100).toFixed(1) + '%';
+
+      filterHlbReport();
+    }
+
+    function filterHlbReport() {
+      const searchVal = document.getElementById('hlb_search').value.toLowerCase().trim();
+      const statusFilter = document.getElementById('hlb_status_filter').value;
+      const tbody = document.getElementById('hlb_table_body');
+      tbody.innerHTML = '';
+
+      let count = 0;
+      for (let i = 1; i <= 242; i++) {
+        const master = HLB_MASTER[i] || { circle: '-', supervisor: '-', enumerator: '-' };
+        const report = window.hlbStatusMap && window.hlbStatusMap[i];
+        const isInspected = !!report;
+        
+        const matchesSearch = 
+          String(i).includes(searchVal) ||
+          master.supervisor.toLowerCase().includes(searchVal) ||
+          master.enumerator.toLowerCase().includes(searchVal);
+        
+        let matchesStatus = true;
+        if (statusFilter === 'inspected') matchesStatus = isInspected;
+        if (statusFilter === 'pending') matchesStatus = !isInspected;
+
+        if (matchesSearch && matchesStatus) {
+          count++;
+          const tr = document.createElement('tr');
+          
+          const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
+          const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
+          const pending = report ? (parseInt(report.pending_houses) || 0) : 0;
+          
+          let completionPercent = 0;
+          if (expected > 0) {
+            completionPercent = Math.min(100, Math.round((completed / expected) * 100));
+          }
+          
+          let progressFillClass = 'empty';
+          if (expected > 0) {
+            progressFillClass = completionPercent === 100 ? '' : 'pending';
+          }
+          
+          const progressBar = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="progress-bar-container" style="width: 80px;">
+                <div class="progress-bar-fill ${progressFillClass}" style="width: ${completionPercent}%"></div>
+              </div>
+              <span style="font-size: 0.8rem; font-weight: bold;">${completionPercent}%</span>
+            </div>
+          `;
+
+          const statusBadge = isInspected 
+            ? '<span class="badge-status success">पूर्ण (Inspected)</span>'
+            : '<span class="badge-status danger">लंबित (Pending)</span>';
+
+          tr.innerHTML = `
+            <td><strong>HLB ${i}</strong></td>
+            <td>सर्कल ${master.circle}</td>
+            <td>${master.supervisor}</td>
+            <td>${master.enumerator}</td>
+            <td>${expected}</td>
+            <td>${completed}</td>
+            <td>${pending}</td>
+            <td>${progressBar}</td>
+            <td>${statusBadge}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      if (count === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
+      }
+    }
+
+    // Tab 3: Render Attendance Report
+    function generateAttendanceReport() {
+      const selectedDate = document.getElementById('attendance_date').value;
+      if (!selectedDate) return;
+
+      const todayReports = adminReportsData.filter(r => r.inspection_date === selectedDate);
+
+      // Create lookup map of inspector submissions for this date
+      const inspectorInspections = {};
+      todayReports.forEach(r => {
+        if (!r.inspector_name) return;
+        const nameLower = r.inspector_name.trim().toLowerCase();
+        if (!inspectorInspections[nameLower]) {
+          inspectorInspections[nameLower] = [];
+        }
+        if (r.hlb_no && !inspectorInspections[nameLower].includes(r.hlb_no)) {
+          inspectorInspections[nameLower].push(r.hlb_no);
+        }
+      });
+
+      // 1. Populate Supervisors daily report table (Circles 1 to 39)
+      const supBody = document.getElementById('attendance_supervisor_body');
+      supBody.innerHTML = '';
+      
+      const absentList = [];
+      let countSup = 0;
+      
+      for (let i = 1; i <= 39; i++) {
+        countSup++;
+        const circleStr = String(i);
+        const supervisorName = CENSUS_DATA[circleStr] ? CENSUS_DATA[circleStr].supervisor : '-';
+        const nameLower = supervisorName.trim().toLowerCase();
+        const inspectedHlbs = inspectorInspections[nameLower];
+        
+        const isInspected = !!inspectedHlbs && inspectedHlbs.length > 0;
+        
+        let hlbDisplay = '';
+        let statusBadge = '';
+        
+        if (isInspected) {
+          hlbDisplay = 'HLB ' + inspectedHlbs.join(', ');
+          statusBadge = '<span class="badge-status success">निरीक्षण किया</span>';
+        } else {
+          hlbDisplay = '<span style="color: #ef4444; font-weight: bold;">लंबित</span>';
+          statusBadge = '<span class="badge-status danger">लंबित</span>';
+          if (supervisorName !== '-') {
+            absentList.push({
+              name: supervisorName,
+              role: 'Supervisor (पर्यवेक्षक)',
+              circle: circleStr
+            });
+          }
+        }
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${countSup}</td>
+          <td><strong>सर्कल ${i}</strong></td>
+          <td>${supervisorName}</td>
+          <td>${hlbDisplay}</td>
+          <td>${statusBadge}</td>
+        `;
+        supBody.appendChild(tr);
+      }
+
+      // 2. Populate Field Trainers daily report table (4 trainers)
+      const trainerBody = document.getElementById('attendance_trainer_body');
+      trainerBody.innerHTML = '';
+      
+      let countTrainer = 0;
+      MASTER_FIELD_TRAINERS.forEach(trainerName => {
+        countTrainer++;
+        const nameLower = trainerName.trim().toLowerCase();
+        const inspectedHlbs = inspectorInspections[nameLower];
+        const isInspected = !!inspectedHlbs && inspectedHlbs.length > 0;
+        
+        let hlbDisplay = '';
+        let statusBadge = '';
+        
+        if (isInspected) {
+          hlbDisplay = 'HLB ' + inspectedHlbs.join(', ');
+          statusBadge = '<span class="badge-status success">निरीक्षण किया</span>';
+        } else {
+          hlbDisplay = '<span style="color: #ef4444; font-weight: bold;">लंबित</span>';
+          statusBadge = '<span class="badge-status danger">लंबित</span>';
+          absentList.push({
+            name: trainerName,
+            role: 'Field Trainer (फील्ड ट्रेनर)',
+            circle: '-'
+          });
+        }
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${countTrainer}</td>
+          <td><strong>${trainerName}</strong></td>
+          <td>${hlbDisplay}</td>
+          <td>${statusBadge}</td>
+        `;
+        trainerBody.appendChild(tr);
+      });
+
+      // 3. Populate Absent List (bottom table)
+      const absentBody = document.getElementById('attendance_absent_body');
+      absentBody.innerHTML = '';
+      
+      if (absentList.length === 0) {
+        absentBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #065f46; padding: 15px; font-weight: bold;">✓ आज सभी का निरीक्षण पूर्ण है! (All Done)</td></tr>';
+      } else {
+        absentList.forEach((item, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td><strong>${item.name}</strong></td>
+            <td>${item.role.split('(')[0].trim()}</td>
+            <td>${item.circle === '-' ? '-' : 'सर्कल ' + item.circle}</td>
+            <td style="color: #ef4444; font-weight: bold;">❌ निरीक्षण लंबित</td>
+          `;
+          absentBody.appendChild(tr);
+        });
+      }
+      
+      document.getElementById('absent_total_badge').textContent = absentList.length;
+    }
+
+    // Print functionality for Admin Dashboard
+    function printActiveReport(printHeaderId) {
+      document.body.classList.add('printing-admin');
+      
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('printing-active'));
+      const activeTabContent = document.getElementById(currentAdminTab);
+      activeTabContent.classList.add('printing-active');
+      
+      document.querySelectorAll('.print-only-section').forEach(h => h.style.display = 'none');
+      
+      if (currentAdminTab === 'tab_supervisor') {
+        document.getElementById('print_supervisor_header').style.display = 'block';
+      } else if (currentAdminTab === 'tab_hlb') {
+        document.getElementById('print_hlb_header').style.display = 'block';
+        document.getElementById('print_hlb_datesub').textContent = 'रिपोर्ट दिनांक: ' + new Date().toLocaleDateString('hi-IN');
+      } else if (currentAdminTab === 'tab_attendance') {
+        document.getElementById('print_attendance_header').style.display = 'block';
+        const selDate = document.getElementById('attendance_date').value;
+        let formattedSelDate = selDate;
+        if (selDate) {
+          const parts = selDate.split('-');
+          if (parts.length === 3) {
+            formattedSelDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+          }
+        }
+        document.getElementById('print_attendance_date_str').textContent = 'निरीक्षण दिनांक: ' + (formattedSelDate || 'आज');
+      }
+
+      window.print();
+
+      setTimeout(() => {
+        document.body.classList.remove('printing-admin');
+        activeTabContent.classList.remove('printing-active');
+        document.querySelectorAll('.print-only-section').forEach(h => h.style.display = 'none');
+      }, 500);
     }
   </script>
 </body>

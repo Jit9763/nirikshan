@@ -24,6 +24,14 @@ function doGet(e) {
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
+    if (data && data.action === 'getReports') {
+      const reports = getReportsData();
+      return ContentService.createTextOutput(JSON.stringify({
+        status: 'success',
+        reports: reports
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+    }
     const result = saveReport(data);
     return ContentService.createTextOutput(JSON.stringify(result))
       .setMimeType(ContentService.MimeType.JSON);
@@ -223,5 +231,95 @@ function saveReport(data) {
       status: 'error',
       message: 'सेव करने में त्रुटि: ' + e.toString()
     };
+  }
+}
+
+/**
+ * Fetches all inspection reports from the Google Sheet.
+ * @return {Array} List of reports as objects
+ */
+function getReportsData() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      return [];
+    }
+    const lastRow = sheet.getLastRow();
+    if (lastRow <= 1) {
+      return [];
+    }
+    
+    const lastCol = sheet.getLastColumn();
+    const data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    
+    // Map headers to normalized keys
+    const headerKeys = {
+      'Timestamp': 'timestamp',
+      'निरीक्षक का पद (Role)': 'inspector_role',
+      'निरीक्षक का नाम (Inspector Name)': 'inspector_name',
+      'निरीक्षण की तिथि (Inspection Date)': 'inspection_date',
+      'राज्य/जिला (State/District)': 'district',
+      'तहसील/ब्लॉक/वार्ड (Tehsil/Block/Ward)': 'block',
+      'HLB नंबर (HLB No.)': 'hlb_no',
+      'प्रगणक का नाम (Enumerator Name)': 'enumerator_name',
+      'पर्यवेक्षक का नाम (Supervisor Name)': 'supervisor_name',
+      'पर्यवेक्षक सर्कल नंबर (Supervisor Circle No.)': 'supervisor_circle_no',
+      'जनगणना मकान अपेक्षित (Expected Houses)': 'assigned_houses',
+      'अब तक पूरे किए गए घर (Completed)': 'completed_houses',
+      'बचे हुए घर (Pending)': 'pending_houses',
+      'क्या नक़्शा सही है? (Map Correct)': 'map_correct',
+      'क्या कोई घर छूटा हुआ मिला? (Missed Houses)': 'missed_houses',
+      'बिंदु 1: घर-घर जाकर डेटा भर रहा है (Door-to-Door)': 'chk_1_status',
+      'बिंदु 1: टिप्पणी (Door-to-Door Remarks)': 'chk_1_remarks',
+      'बिंदु 2: मकान सूचीकरण सही है (Houselisting)': 'chk_2_status',
+      'बिंदु 2: टिप्पणी (Houselisting Remarks)': 'chk_2_remarks',
+      'बिंदु 3: मुखिया का नाम सही दर्ज है (Head of Family)': 'chk_3_status',
+      'बिंदु 3: टिप्पणी (Head of Family Remarks)': 'chk_3_remarks',
+      'बिंदु 4: सदस्यों की संख्या/लिंग सही है (Members/Gender)': 'chk_4_status',
+      'बिंदु 4: टिप्पणी (Members/Gender Remarks)': 'chk_4_remarks',
+      'बिंदु 5: मोबाइल/आईडी स्वेच्छा से लिया (ID Taken)': 'chk_5_status',
+      'बिंदु 5: टिप्पणी (ID Taken Remarks)': 'chk_5_remarks',
+      'बिंदु 6: लोग सहयोग कर रहे हैं (Cooperation)': 'chk_6_status',
+      'बिंदु 6: टिप्पणी (Cooperation Remarks)': 'chk_6_remarks',
+      'बिंदु 7: डिजिटल ऐप/किट सही काम कर रही है (App Working)': 'chk_7_status',
+      'बिंदु 7: टिप्पणी (App Working Remarks)': 'chk_7_remarks',
+      'शिकायत 1 (Complaint 1)': 'complaint_1',
+      'शिकायत 2 (Complaint 2)': 'complaint_2',
+      'शिकायत 3 (Complaint 3)': 'complaint_3',
+      'सुझाव 1 (Suggestion 1)': 'suggestion_1',
+      'सुझाव 2 (Suggestion 2)': 'suggestion_2',
+      'सुझाव 3 (Suggestion 3)': 'suggestion_3',
+      'समग्र फीडबैक (Overall Rating)': 'overall_rating',
+      'हस्ताक्षर (Signature)': 'signature'
+    };
+    
+    const reports = [];
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      const obj = {};
+      for (let j = 0; j < headers.length; j++) {
+        const key = headerKeys[headers[j]] || headers[j];
+        let val = row[j];
+        if (val instanceof Date) {
+          if (headers[j] === 'निरीक्षण की तिथि (Inspection Date)') {
+            try {
+              val = Utilities.formatDate(val, ss.getSpreadsheetTimeZone(), 'yyyy-MM-dd');
+            } catch(e) {
+              val = val.toISOString().split('T')[0];
+            }
+          } else {
+            val = val.toLocaleString();
+          }
+        }
+        obj[key] = val;
+      }
+      reports.push(obj);
+    }
+    return reports;
+  } catch(e) {
+    Logger.log("Error in getReportsData: " + e.toString());
+    return [];
   }
 }
