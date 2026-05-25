@@ -1959,9 +1959,14 @@
     <!-- ROLE SELECTION MODAL -->
     <div id="roleModal" class="modal-overlay">
       <div class="modal-card">
-        <div class="modal-header">
-          <h2>भूमिका और विवरण का चयन करें</h2>
-          <p>निरीक्षण शुरू करने के लिए कृपया अपनी भूमिका चुनें</p>
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; gap: 15px; position: relative;">
+          <div>
+            <h2 style="margin: 0;">भूमिका और विवरण का चयन करें</h2>
+            <p style="margin: 5px 0 0 0;">निरीक्षण शुरू करने के लिए कृपया अपनी भूमिका चुनें</p>
+          </div>
+          <button type="button" onclick="promptAdminPassword()" title="Admin Panel" style="background: rgba(255, 255, 255, 0.15); color: #ffffff; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: all 0.2s ease; flex-shrink: 0; padding: 0;" onmouseover="this.style.background='rgba(255, 255, 255, 0.25)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.15)';">
+            🔑
+          </button>
         </div>
         <div class="modal-body">
           <div class="modal-role-options">
@@ -2046,8 +2051,7 @@
 
           </div>
         </div>
-        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; padding: 20px 30px; flex-wrap: wrap;">
-          <button type="button" class="btn" style="background-color: var(--accent-color); color: var(--primary-color); padding: 8px 16px; font-size: 0.9rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; height: auto;" onclick="promptAdminPassword()">🔑 Admin Panel</button>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 10px; padding: 20px 30px; flex-wrap: wrap;">
           <button id="modal_confirm_btn" class="btn btn-primary" disabled onclick="confirmRoleSelection()" style="width: auto; padding: 10px 20px; font-size: 1rem; border-radius: 6px; margin: 0;">
             आगे बढ़ें (Proceed) →
           </button>
