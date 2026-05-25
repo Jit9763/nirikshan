@@ -486,11 +486,12 @@
         padding: 0;
       }
 
-      /* Hide all interactive elements */
+      /* Hide all interactive elements and admin view in default print */
       .header-banner .badge,
       .btn-container,
       .success-alert,
       #formView,
+      #adminView,
       .no-print {
         display: none !important;
       }
@@ -4356,13 +4357,16 @@
         document.getElementById('print_attendance_date_str').textContent = 'निरीक्षण दिनांक: ' + (formattedSelDate || 'आज');
       }
 
-      window.print();
-
+      // Yield thread execution to let mobile browsers apply styles & repaint
       setTimeout(() => {
-        document.body.classList.remove('printing-admin');
-        activeTabContent.classList.remove('printing-active');
-        document.querySelectorAll('.print-only-section').forEach(h => h.style.display = 'none');
-      }, 500);
+        window.print();
+        
+        setTimeout(() => {
+          document.body.classList.remove('printing-admin');
+          activeTabContent.classList.remove('printing-active');
+          document.querySelectorAll('.print-only-section').forEach(h => h.style.display = 'none');
+        }, 500);
+      }, 150);
     }
   </script>
 </body>
