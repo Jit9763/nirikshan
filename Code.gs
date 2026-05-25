@@ -5,11 +5,13 @@
 
 // Name of the Sheet where data will be stored
 const SHEET_NAME = 'FieldReports';
+const SYNC_SHEET_NAME = 'HLBSyncData';
 
 /**
  * Serves the HTML Web Form.
  */
 function doGet(e) {
+  initSyncSheet();
   const htmlOutput = HtmlService.createTemplateFromFile('Index')
     .evaluate()
     .setTitle('जनगणना निरीक्षण फील्ड रिपोर्ट - Census Inspection')
@@ -25,10 +27,11 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     if (data && data.action === 'getReports') {
-      const reports = getReportsData();
+      const dashboardData = getAdminDashboardData();
       return ContentService.createTextOutput(JSON.stringify({
         status: 'success',
-        reports: reports
+        reports: dashboardData.reports,
+        syncData: dashboardData.syncData
       }))
       .setMimeType(ContentService.MimeType.JSON);
     }
@@ -321,5 +324,77 @@ function getReportsData() {
   } catch(e) {
     Logger.log("Error in getReportsData: " + e.toString());
     return [];
+  }
+}
+
+/**
+ * Combined function to fetch all reports and the latest HLB sync data mapping.
+ */
+function getAdminDashboardData() {
+  try {
+    return {
+      reports: getReportsData(),
+      syncData: getSyncData()
+    };
+  } catch(e) {
+    Logger.log("Error in getAdminDashboardData: " + e.toString());
+    return { reports: [], syncData: {} };
+  }
+}
+
+/**
+ * Reads synchronization data from the HLBSyncData sheet.
+ */
+function getSyncData() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SYNC_SHEET_NAME);
+    if (!sheet) {
+      initSyncSheet();
+      sheet = ss.getSheetByName(SYNC_SHEET_NAME);
+    }
+    const lastRow = sheet.getLastRow();
+    if (lastRow <= 1) {
+      return {};
+    }
+    const data = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
+    const syncMap = {};
+    for (let i = 0; i < data.length; i++) {
+      const hlbNum = String(data[i][0]).trim();
+      const syncVal = data[i][1];
+      if (hlbNum) {
+        syncMap[hlbNum] = syncVal;
+      }
+    }
+    return syncMap;
+  } catch(e) {
+    Logger.log("Error in getSyncData: " + e.toString());
+    return {};
+  }
+}
+
+/**
+ * Initializes the HLB Sync sheet with headers and pre-populates it with HLBs 1 to 242.
+ */
+function initSyncSheet() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SYNC_SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SYNC_SHEET_NAME);
+      const headers = ['HLB Number', 'Sync Data'];
+      sheet.appendRow(headers);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#d9e1f2');
+      sheet.setFrozenRows(1);
+      
+      // Populate HLB 1 to 242 rows
+      const rows = [];
+      for (let i = 1; i <= 242; i++) {
+        rows.push([i, '']);
+      }
+      sheet.getRange(2, 1, 242, 2).setValues(rows);
+    }
+  } catch(e) {
+    Logger.log("Error in initSyncSheet: " + e.toString());
   }
 }

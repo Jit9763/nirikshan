@@ -1841,6 +1841,7 @@
                 <th>अपेक्षित घर (Expected)</th>
                 <th>पूर्ण घर (Completed)</th>
                 <th>बचे घर (Pending)</th>
+                <th>सिंक डेटा (Sync Data)</th>
                 <th>प्रगति % (Progress)</th>
                 <th>स्थिति (Status)</th>
               </tr>
@@ -3933,16 +3934,17 @@
       
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         google.script.run
-          .withSuccessHandler(function (reports) {
+          .withSuccessHandler(function (data) {
             document.getElementById('loader').style.display = 'none';
-            adminReportsData = reports || [];
+            adminReportsData = data.reports || [];
+            window.hlbSyncData = data.syncData || {};
             processAndRenderReports();
           })
           .withFailureHandler(function (error) {
             document.getElementById('loader').style.display = 'none';
             alert('डेटा लोड करने में त्रुटि: ' + error.message);
           })
-          .getReportsData();
+          .getAdminDashboardData();
       } else {
         const webAppUrl = 'https://script.google.com/macros/s/AKfycbyc226bwat0bvih-TWfx89He5HYC2O69NivHdt3KgUeuT_wXUrGzjNmwM8XpjABCvA1tg/exec';
         fetch(webAppUrl, {
@@ -3959,6 +3961,7 @@
           document.getElementById('loader').style.display = 'none';
           if (response.status === 'success') {
             adminReportsData = response.reports || [];
+            window.hlbSyncData = response.syncData || {};
             processAndRenderReports();
           } else {
             alert('डेटा लोड करने में त्रुटि: ' + response.message);
@@ -4171,6 +4174,10 @@
             ? '<span class="badge-status success">पूर्ण (Inspected)</span>'
             : '<span class="badge-status danger">लंबित (Pending)</span>';
 
+          const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
+            ? window.hlbSyncData[String(i)] 
+            : '-';
+
           tr.innerHTML = `
             <td><strong>HLB ${i}</strong></td>
             <td>सर्कल ${master.circle}</td>
@@ -4179,6 +4186,7 @@
             <td>${expected}</td>
             <td>${completed}</td>
             <td>${pending}</td>
+            <td>${syncVal}</td>
             <td>${progressBar}</td>
             <td>${statusBadge}</td>
           `;
@@ -4187,7 +4195,7 @@
       }
 
       if (count === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
       }
     }
 
