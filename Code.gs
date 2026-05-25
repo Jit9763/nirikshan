@@ -57,7 +57,7 @@ function saveReport(data) {
         'निरीक्षण की तिथि (Inspection Date)',
         'राज्य/जिला (State/District)',
         'तहसील/ब्लॉक/वार्ड (Tehsil/Block/Ward)',
-        'गणना ब्लॉक नंबर (EB Number)',
+        'HLB नंबर (HLB No.)',
         'प्रगणक का नाम (Enumerator Name)',
         'पर्यवेक्षक का नाम (Supervisor Name)',
         'पर्यवेक्षक सर्कल नंबर (Supervisor Circle No.)',
@@ -95,14 +95,36 @@ function saveReport(data) {
       sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#f1f3f4');
       sheet.setFrozenRows(1);
     } else {
-      // Ensure the 'हस्ताक्षर (Signature)' header exists in the existing sheet
+      // Ensure the headers are upgraded
       const lastColumn = sheet.getLastColumn();
       if (lastColumn > 0) {
         const headerRange = sheet.getRange(1, 1, 1, lastColumn);
-        const existingHeaders = headerRange.getValues()[0];
-        const sigHeaderIndex = existingHeaders.indexOf('हस्ताक्षर (Signature)');
+        let existingHeaders = headerRange.getValues()[0];
+        
+        // 1. Delete EB Number column if it exists
+        const ebHeaderIndex = existingHeaders.indexOf('गणना ब्लॉक नंबर (EB Number)');
+        if (ebHeaderIndex !== -1) {
+          const colToDel = ebHeaderIndex + 1; // 1-indexed
+          sheet.deleteColumn(colToDel);
+          
+          // Refetch headers after deletion
+          const updatedLastCol = sheet.getLastColumn();
+          existingHeaders = sheet.getRange(1, 1, 1, updatedLastCol).getValues()[0];
+        }
+        
+        // 2. Ensure HLB number is at column 7 (index 6, which is column G)
+        const hlbHeaderIndex = existingHeaders.indexOf('HLB नंबर (HLB No.)');
+        if (hlbHeaderIndex === -1) {
+          sheet.insertColumnBefore(7);
+          sheet.getRange(1, 7).setValue('HLB नंबर (HLB No.)').setFontWeight('bold').setBackground('#f1f3f4');
+        }
+        
+        // 3. Ensure Signature header exists
+        const updatedLastCol = sheet.getLastColumn();
+        const updatedHeaders = sheet.getRange(1, 1, 1, updatedLastCol).getValues()[0];
+        const sigHeaderIndex = updatedHeaders.indexOf('हस्ताक्षर (Signature)');
         if (sigHeaderIndex === -1) {
-          sheet.getRange(1, lastColumn + 1).setValue('हस्ताक्षर (Signature)').setFontWeight('bold').setBackground('#f1f3f4');
+          sheet.getRange(1, updatedLastCol + 1).setValue('हस्ताक्षर (Signature)').setFontWeight('bold').setBackground('#f1f3f4');
         }
       }
     }
@@ -148,7 +170,7 @@ function saveReport(data) {
       data.inspection_date || '',
       data.district || '',
       data.block || '',
-      data.eb_number || '',
+      data.hlb_no || '',
       data.enumerator_name || '',
       data.supervisor_name || '',
       data.supervisor_circle_no || '',

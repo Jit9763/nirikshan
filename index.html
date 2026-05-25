@@ -705,6 +705,339 @@
         max-width: 280px;
       }
     }
+
+    /* GRID-4 LAYOUT */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 20px 30px;
+      margin-bottom: 30px;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .grid-4 {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+    }
+
+    .print-grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px 20px;
+      margin-bottom: 15px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .print-grid-4 {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+
+    @media print {
+      .print-grid-4 {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 6px 15px !important;
+        margin-bottom: 8px !important;
+      }
+    }
+
+    /* MODAL OVERLAY */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    /* MODAL CARD */
+    .modal-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 25px 30px;
+      border-bottom: 3px solid var(--accent-color);
+    }
+
+    .modal-header h2 {
+      font-family: var(--font-hindi);
+      font-size: 1.6rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .modal-header p {
+      font-size: 0.95rem;
+      opacity: 0.85;
+    }
+
+    .modal-body {
+      padding: 30px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    /* ROLE OPTIONS CARDS */
+    .modal-role-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    @media screen and (max-width: 480px) {
+      .modal-role-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .modal-radio-card {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .modal-radio-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      background-color: #f8fafc;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      transition: all 0.25s ease;
+      text-align: center;
+      height: 100%;
+    }
+
+    .modal-radio-card input[type="radio"]:checked + .radio-card-content {
+      border-color: var(--accent-color);
+      background-color: #fffbeb;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);
+    }
+
+    .modal-radio-card:hover .radio-card-content {
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    .modal-radio-card input[type="radio"]:checked:hover + .radio-card-content {
+      border-color: var(--accent-color);
+    }
+
+    .role-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .role-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* DYNAMIC FIELDS */
+    .modal-dynamic-fields {
+      border-top: 1px solid var(--border-color);
+      padding-top: 25px;
+    }
+
+    .modal-select, .modal-input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #ffffff;
+      transition: all 0.3s ease;
+    }
+
+    .modal-select:focus, .modal-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+    }
+
+    /* INFO CARD FOR SUPERVISOR DETAILS */
+    .modal-info-card {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 15px;
+      color: #166534;
+    }
+
+    .modal-info-card h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .modal-info-card p {
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed rgba(22, 101, 52, 0.15);
+      padding-bottom: 4px;
+    }
+
+    .modal-info-card p:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .modal-footer {
+      padding: 20px 30px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      background-color: #f8fafc;
+    }
+
+    #modal_confirm_btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.05rem;
+      border-radius: 8px;
+    }
+
+    #modal_confirm_btn:disabled {
+      background-color: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* RESPONSIVE MODAL FOR MOBILE STYLING */
+    @media screen and (max-width: 576px) {
+      .modal-overlay {
+        padding: 10px;
+      }
+      .modal-card {
+        border-radius: 12px;
+        max-height: 95vh;
+      }
+      .modal-header {
+        padding: 15px 20px;
+      }
+      .modal-header h2 {
+        font-size: 1.3rem;
+      }
+      .modal-header p {
+        font-size: 0.85rem;
+      }
+      .modal-body {
+        padding: 15px;
+        max-height: 60vh;
+      }
+      .modal-role-options {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      .radio-card-content {
+        padding: 10px 8px;
+      }
+      .role-icon {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+      }
+      .role-title {
+        font-size: 0.8rem;
+      }
+      .modal-footer {
+        padding: 15px 20px;
+      }
+      #modal_confirm_btn {
+        padding: 12px;
+        font-size: 0.95rem;
+      }
+    }
+    @media screen and (max-width: 380px) {
+      .modal-role-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* OFFICIAL PAPER INFO BOXES */
+    .info-block-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      background-color: #f8fafc;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+    .info-block-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-bottom: 1.5px solid var(--accent-color);
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    @media print {
+      .info-block-box {
+        border: 1px solid #000000 !important;
+        background-color: transparent !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
+      }
+      .info-block-title {
+        border-bottom: 1px solid #000000 !important;
+        color: #000000 !important;
+      }
+    }
   </style>
 </head>
 
@@ -734,7 +1067,7 @@
 
         <div class="grid-3">
           <div class="form-group">
-            <label for="inspector_role">निरीक्षक का पद (Role) <span>*</span></label>
+            <label for="inspector_role">निरीक्षक का पद (Role) <span>*</span> <span id="changeRoleLink" style="font-size: 0.82rem; font-weight: normal; margin-left: 10px; color: var(--accent-color); cursor: pointer; text-decoration: underline; display: none;" onclick="openRoleModal()">[भूमिका बदलें / Change]</span></label>
             <select id="inspector_role" name="inspector_role" required onchange="updateRoleUI()">
               <option value="">-- पद चुनें --</option>
               <option value="Supervisor (पर्यवेक्षक)">Supervisor (पर्यवेक्षक)</option>
@@ -754,7 +1087,7 @@
           </div>
         </div>
 
-        <div class="grid-3">
+        <div class="grid-2">
           <div class="form-group">
             <label for="district">राज्य/जिला (State/District) <span>*</span></label>
             <input type="text" id="district" name="district" value="अजमेर" placeholder="जैसे: राजस्थान / भीलवाड़ा"
@@ -765,17 +1098,18 @@
             <label for="block">तहसील/ब्लॉक/वार्ड (Tehsil/Block/Ward) <span>*</span></label>
             <input type="text" id="block" name="block" value="भिनाय" placeholder="तहसील या वार्ड दर्ज करें" required>
           </div>
-
-          <div class="form-group">
-            <label for="eb_number">गणना ब्लॉक नंबर (EB Number) <span>*</span></label>
-            <input type="text" id="eb_number" name="eb_number" placeholder="EB Number दर्ज करें" required>
-          </div>
         </div>
 
-        <div class="grid-3">
+        <div class="grid-4">
           <div class="form-group">
-            <label for="enumerator_name">प्रगणक का नाम (Enumerator Name) <span>*</span></label>
-            <input type="text" id="enumerator_name" name="enumerator_name" placeholder="प्रगणक का नाम लिखें" required>
+            <label for="supervisor_circle_no">पर्यवेक्षक सर्कल नंबर (Supervisor Circle No.) <span>*</span></label>
+            <input type="text" id="supervisor_circle_no" name="supervisor_circle_no" placeholder="सर्कल नंबर दर्ज करें"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="hlb_no">HLB नंबर (HLB No.) <span>*</span></label>
+            <input type="text" id="hlb_no" name="hlb_no" placeholder="HLB नंबर दर्ज करें" required>
           </div>
 
           <div class="form-group">
@@ -785,9 +1119,8 @@
           </div>
 
           <div class="form-group">
-            <label for="supervisor_circle_no">पर्यवेक्षक सर्कल नंबर (Supervisor Circle No.) <span>*</span></label>
-            <input type="text" id="supervisor_circle_no" name="supervisor_circle_no" placeholder="सर्कल नंबर दर्ज करें"
-              required>
+            <label for="enumerator_name">प्रगणक का नाम (Enumerator Name) <span>*</span></label>
+            <input type="text" id="enumerator_name" name="enumerator_name" placeholder="प्रगणक का नाम लिखें" required>
           </div>
         </div>
 
@@ -1074,15 +1407,24 @@
           <div class="print-field"><strong>निरीक्षक का नाम:</strong> <span id="r_name"></span></div>
           <div class="print-field"><strong>निरीक्षण तिथि:</strong> <span id="r_date"></span></div>
         </div>
-        <div class="print-grid-3">
+        <div class="print-grid">
           <div class="print-field"><strong>राज्य/जिला:</strong> <span id="r_district"></span></div>
           <div class="print-field"><strong>ब्लॉक/तहसील/वार्ड:</strong> <span id="r_block"></span></div>
-          <div class="print-field"><strong>गणना ब्लॉक (EB) सं.:</strong> <span id="r_eb"></span></div>
         </div>
-        <div class="print-grid-3">
-          <div class="print-field"><strong>प्रगणक (Enumerator):</strong> <span id="r_enumerator"></span></div>
-          <div class="print-field"><strong>पर्यवेक्षक (Supervisor):</strong> <span id="r_supervisor"></span></div>
-          <div class="print-field"><strong>पर्यवेक्षक सर्कल नंबर:</strong> <span id="r_supervisor_circle"></span></div>
+        <div class="print-grid" style="margin-top: 15px;">
+          <!-- Supervisor Details Card -->
+          <div class="info-block-box">
+            <div class="info-block-title">पर्यवेक्षक विवरण (Supervisor Details)</div>
+            <div class="print-field" style="margin-bottom: 6px;"><strong>पर्यवेक्षक का नाम (Name):</strong> <span id="r_supervisor"></span></div>
+            <div class="print-field"><strong>सर्कल नंबर (Circle No.):</strong> <span id="r_supervisor_circle"></span></div>
+          </div>
+          
+          <!-- Enumerator Details Card -->
+          <div class="info-block-box">
+            <div class="info-block-title">प्रगणक विवरण (Enumerator Details)</div>
+            <div class="print-field" style="margin-bottom: 6px;"><strong>प्रगणक का नाम (Enumerator):</strong> <span id="r_enumerator"></span></div>
+            <div class="print-field"><strong>HLB नंबर (HLB No.):</strong> <span id="r_hlb"></span></div>
+          </div>
         </div>
       </div>
 
@@ -1210,13 +1552,1283 @@
 
   </div>
 
+    <!-- ROLE SELECTION MODAL -->
+    <div id="roleModal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>भूमिका और विवरण का चयन करें</h2>
+          <p>निरीक्षण शुरू करने के लिए कृपया अपनी भूमिका चुनें</p>
+        </div>
+        <div class="modal-body">
+          <div class="modal-role-options">
+            <label class="modal-radio-card">
+              <input type="radio" name="modal_role" value="Supervisor (पर्यवेक्षक)" onchange="handleModalRoleChange(this.value)">
+              <span class="radio-card-content">
+                <span class="role-icon">👤</span>
+                <span class="role-title">Supervisor (पर्यवेक्षक)</span>
+              </span>
+            </label>
+            <label class="modal-radio-card">
+              <input type="radio" name="modal_role" value="Charge Officer (चार्ज अधिकारी)" onchange="handleModalRoleChange(this.value)">
+              <span class="radio-card-content">
+                <span class="role-icon">💼</span>
+                <span class="role-title">Charge Officer (चार्ज अधिकारी)</span>
+              </span>
+            </label>
+            <label class="modal-radio-card">
+              <input type="radio" name="modal_role" value="Field Trainer (फील्ड ट्रेनर)" onchange="handleModalRoleChange(this.value)">
+              <span class="radio-card-content">
+                <span class="role-icon">🎓</span>
+                <span class="role-title">Field Trainer (फील्ड ट्रेनर)</span>
+              </span>
+            </label>
+            <label class="modal-radio-card">
+              <input type="radio" name="modal_role" value="Other" onchange="handleModalRoleChange(this.value)">
+              <span class="radio-card-content">
+                <span class="role-icon">⚙️</span>
+                <span class="role-title">Other (अन्य)</span>
+              </span>
+            </label>
+          </div>
+
+          <div id="modal_dynamic_inputs" class="modal-dynamic-fields" style="display: none;">
+            
+            <!-- Other Role Field -->
+            <div id="modal_other_fields" style="display: none; margin-bottom: 15px;">
+              <div class="form-group">
+                <label for="modal_other_role_input">पद का नाम दर्ज करें (Enter Your Role) <span>*</span></label>
+                <input type="text" id="modal_other_role_input" class="modal-input" placeholder="जैसे: Block Coordinator, etc." oninput="validateModalForm()">
+              </div>
+            </div>
+
+            <!-- Field Trainer Name Selection -->
+            <div id="modal_trainer_fields" style="display: none; margin-bottom: 15px;">
+              <div class="form-group">
+                <label for="modal_trainer_select">फील्ड ट्रेनर का नाम (Field Trainer Name) <span>*</span></label>
+                <select id="modal_trainer_select" class="modal-select" onchange="validateModalForm()">
+                  <option value="">-- नाम चुनें --</option>
+                  <option value="राकेश कुमार बिरावत">राकेश कुमार बिरावत</option>
+                  <option value="दयानंद मारू">दयानंद मारू</option>
+                  <option value="मुकेश रावत">मुकेश रावत</option>
+                  <option value="गंगाविशन प्रजापत">गंगाविशन प्रजापत</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Supervisor / Universal Circle/HLB Fields -->
+            <div id="modal_supervisor_fields" style="display: none;">
+              <div class="form-group">
+                <label for="modal_circle_select">पर्यवेक्षक सर्कल नंबर (Supervisor Circle No.) <span>*</span></label>
+                <select id="modal_circle_select" class="modal-select" onchange="handleModalCircleChange()">
+                  <option value="">-- सर्कल चुनें --</option>
+                </select>
+              </div>
+              
+              <div class="form-group" id="modal_hlb_container" style="display: none; margin-top: 15px;">
+                <label for="modal_hlb_select">HLB नंबर (HLB No.) <span>*</span></label>
+                <select id="modal_hlb_select" class="modal-select" onchange="handleModalHlbChange()">
+                  <option value="">-- HLB चुनें --</option>
+                </select>
+              </div>
+
+              <!-- Auto-fetched info display card -->
+              <div id="modal_info_card" class="modal-info-card" style="display: none; margin-top: 20px;">
+                <h4>सत्यापित विवरण (Verified Details):</h4>
+                <p><strong>पर्यवेक्षक का नाम:</strong> <span id="modal_info_supervisor">-</span></p>
+                <p><strong>प्रगणक का नाम:</strong> <span id="modal_info_enumerator">-</span></p>
+                <p><strong>प्रगणक यूजर आईडी (EB No.):</strong> <span id="modal_info_userid">-</span></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="modal_confirm_btn" class="btn btn-primary" disabled onclick="confirmRoleSelection()">
+            आगे बढ़ें (Proceed) →
+          </button>
+        </div>
+      </div>
+    </div>
+
   <script>
+    // EMBEDDED CENSUS DATABASE
+    const CENSUS_DATA = {
+  "1": {
+    "supervisor": "trilok chand bhambhi",
+    "hlbs": {
+      "1": {
+        "enumerator": "Shimbhu Dayal Gurjar",
+        "userId": "ev_0919009_shimbhuday"
+      },
+      "2": {
+        "enumerator": "Sheela Chaudhary",
+        "userId": "ev_0919009_sheelachau"
+      },
+      "25": {
+        "enumerator": "Rajesh Kumar Rajput",
+        "userId": "ev_0919009_rajeshkuma"
+      },
+      "26": {
+        "enumerator": "Satyanarayan Bairwa",
+        "userId": "ev_0919009_satyanaray_1"
+      },
+      "37": {
+        "enumerator": "VINOD KUMAR SARWAL",
+        "userId": "ev_0919009_vinodkumar"
+      },
+      "38": {
+        "enumerator": "SHRAVAN LAL GURJAR",
+        "userId": "ev_0919009_shravanlal"
+      }
+    }
+  },
+  "2": {
+    "supervisor": "Sanjay Vyas",
+    "hlbs": {
+      "39": {
+        "enumerator": "Ram Singh Chaudhary",
+        "userId": "ev_0919009_ramsinghch"
+      },
+      "40": {
+        "enumerator": "Kumawat Pratishtha",
+        "userId": "ev_0919009_kumawatpra"
+      },
+      "41": {
+        "enumerator": "Hanuman Prasad Jat",
+        "userId": "ev_0919009_hanumanpra"
+      },
+      "42": {
+        "enumerator": "PRITAM KUMAR JAIN",
+        "userId": "ev_0919009_pritamkuma"
+      },
+      "43": {
+        "enumerator": "Hanuman Prasad Jat",
+        "userId": "ev_0919009_hanumanpra"
+      },
+      "44": {
+        "enumerator": "Ramprasad Lakshkar",
+        "userId": "ev_0919009_ramprasadl"
+      },
+      "45": {
+        "enumerator": "Babu Lal Regar",
+        "userId": "ev_0919009_babulalreg"
+      }
+    }
+  },
+  "3": {
+    "supervisor": "Mahavir Prasad Jangid",
+    "hlbs": {
+      "19": {
+        "enumerator": "Vaibhav Raj Mehra",
+        "userId": "ev_0919009_vaibhavraj"
+      },
+      "21": {
+        "enumerator": "Roshan Sharma",
+        "userId": "ev_0919009_roshanshar"
+      },
+      "27": {
+        "enumerator": "Chhotu Lal Bairwa",
+        "userId": "ev_0919009_chhotulalb"
+      },
+      "28": {
+        "enumerator": "Santosh Kumar",
+        "userId": "ev_0919009_santoshkum"
+      },
+      "29": {
+        "enumerator": "Anurag Ranwa",
+        "userId": "ev_0919009_anuragranw"
+      },
+      "30": {
+        "enumerator": "Ashish Kumar Sharma",
+        "userId": "ev_0919009_ashishkuma"
+      }
+    }
+  },
+  "4": {
+    "supervisor": "Shivprakash Lunia",
+    "hlbs": {
+      "3": {
+        "enumerator": "Dharmendra Yadav",
+        "userId": "ev_0919009_dharmendra_2"
+      },
+      "4": {
+        "enumerator": "Anil Kumar Sankhla",
+        "userId": "ev_0919009_anilkumars"
+      },
+      "5": {
+        "enumerator": "Kishan gopal chhipa",
+        "userId": "ev_0919009_krishnagop"
+      },
+      "6": {
+        "enumerator": "SHREEBALLABH PAREEK",
+        "userId": "ev_0919009_shreeballa"
+      },
+      "7": {
+        "enumerator": "Anil Kumar Joshi",
+        "userId": "ev_0919009_anilkumarj"
+      },
+      "8": {
+        "enumerator": "Arjun Kumar Jangid",
+        "userId": "ev_0919009_arjunkumar"
+      }
+    }
+  },
+  "5": {
+    "supervisor": "Mukesh Rawat",
+    "hlbs": {
+      "9": {
+        "enumerator": "Deepak",
+        "userId": "ev_0919009_deepak"
+      },
+      "10": {
+        "enumerator": "Surender Kumar",
+        "userId": "ev_0919009_surenderku"
+      },
+      "11": {
+        "enumerator": "Dashrath Vaishnav",
+        "userId": "ev_0919009_dashrathva"
+      },
+      "12": {
+        "enumerator": "Surendra Kumar Kharol",
+        "userId": "ev_0919009_surendraku_1"
+      },
+      "13": {
+        "enumerator": "Satyanarayan Khatik",
+        "userId": "ev_0919009_satyanaray_2"
+      }
+    }
+  },
+  "6": {
+    "supervisor": "Gangavishan Prajapat",
+    "hlbs": {
+      "31": {
+        "enumerator": "Dharmichand Mali",
+        "userId": "ev_0919009_dharmichan"
+      },
+      "32": {
+        "enumerator": "Pawan Kumar Dhumas",
+        "userId": "ev_0919009_pawankumar_1"
+      },
+      "33": {
+        "enumerator": "Vimal Kumar Jangid",
+        "userId": "ev_0919009_vimalkumar"
+      },
+      "34": {
+        "enumerator": "Manoj Kumar",
+        "userId": "ev_0919009_manojkumar_1"
+      },
+      "35": {
+        "enumerator": "Murlidhar Vaishnav",
+        "userId": "ev_0919009_murlidharv"
+      },
+      "36": {
+        "enumerator": "Bhupendra Singh Rathore",
+        "userId": "ev_0919009_bhupendras_1"
+      }
+    }
+  },
+  "7": {
+    "supervisor": "Sandeep Bagrani",
+    "hlbs": {
+      "18": {
+        "enumerator": "Ram Prasad Bhambhi",
+        "userId": "ev_0919009_ramprasadb"
+      },
+      "20": {
+        "enumerator": "Shivraj",
+        "userId": "ev_0919009_shivraj"
+      },
+      "55": {
+        "enumerator": "Giriraj Chaudhary",
+        "userId": "ev_0919009_girirajcha"
+      },
+      "56": {
+        "enumerator": "Abdul Halim Kha",
+        "userId": "ev_0919009_abdulhalim"
+      },
+      "57": {
+        "enumerator": "Rangalal Gurjar",
+        "userId": "ev_0919009_rangalalgu"
+      }
+    }
+  },
+  "8": {
+    "supervisor": "Chhotu Lal Jat",
+    "hlbs": {
+      "22": {
+        "enumerator": "Ram Dayal",
+        "userId": "ev_0919009_ramdayal"
+      },
+      "23": {
+        "enumerator": "Hans Raj Gurjar",
+        "userId": "ev_0919009_hansrajgur"
+      },
+      "24": {
+        "enumerator": "Rohit Kumar Jangid",
+        "userId": "ev_0919009_rohitkumar"
+      },
+      "46": {
+        "enumerator": "Bhanwar Lal Regar",
+        "userId": "ev_0919009_bhanwarlal"
+      },
+      "53": {
+        "enumerator": "Kana Ram",
+        "userId": "ev_0919009_kanaram"
+      },
+      "54": {
+        "enumerator": "Mumtaz Ali Khan",
+        "userId": "ev_0919009_mumtazalik"
+      }
+    }
+  },
+  "9": {
+    "supervisor": "Dharmendra Singh Rathore",
+    "hlbs": {
+      "47": {
+        "enumerator": "Bhanwar Lal",
+        "userId": "ev_0919009_bhanwarlal_1"
+      },
+      "48": {
+        "enumerator": "Avinash Prasad Vaishnava",
+        "userId": "ev_0919009_avinashpra"
+      },
+      "49": {
+        "enumerator": "Lakhan Vaishnav",
+        "userId": "ev_0919009_lakhanvais"
+      },
+      "50": {
+        "enumerator": "Harish Kumar Vaishnav",
+        "userId": "ev_0919009_harishkuma"
+      },
+      "51": {
+        "enumerator": "Hansraj Lalria",
+        "userId": "ev_0919009_hansrajlal"
+      },
+      "52": {
+        "enumerator": "Ashok Kumar Jat",
+        "userId": "ev_0919009_ashokkumar"
+      }
+    }
+  },
+  "10": {
+    "supervisor": "LALIT KISHORE PAREEK",
+    "hlbs": {
+      "114": {
+        "enumerator": "Lokendra Singh Chauhan",
+        "userId": "ev_0919009_lokendrasi"
+      },
+      "115": {
+        "enumerator": "Pushpakant Parik",
+        "userId": "ev_0919009_pushpakant"
+      },
+      "116": {
+        "enumerator": "Rameshwar Lal Danga",
+        "userId": "ev_0919009_rameshwarl"
+      },
+      "117": {
+        "enumerator": "Ankur Ojha",
+        "userId": "ev_0919009_ankurojha"
+      },
+      "118": {
+        "enumerator": "Raghuveer Jangid",
+        "userId": "ev_0919009_raghuveerj"
+      },
+      "119": {
+        "enumerator": "Mohammad Rafiq",
+        "userId": "ev_0919009_mohammadra"
+      }
+    }
+  },
+  "11": {
+    "supervisor": "Muralidhar Sadhu",
+    "hlbs": {
+      "58": {
+        "enumerator": "Rajendra kumar",
+        "userId": "ev_0919009_rajendraku_1"
+      },
+      "59": {
+        "enumerator": "Akshay Kumar Sukariya",
+        "userId": "ev_0919009_akshaykuma"
+      },
+      "60": {
+        "enumerator": "Ramswaroop Jangid",
+        "userId": "ev_0919009_ramswaroop_2"
+      },
+      "61": {
+        "enumerator": "Devendra Prajapat",
+        "userId": "ev_0919009_devendrapr"
+      },
+      "65": {
+        "enumerator": "Jitendra Kumar Sharma",
+        "userId": "ev_0919009_jitendraku"
+      },
+      "112": {
+        "enumerator": "Omprakash Sharma",
+        "userId": "ev_0919009_omprakashs_1"
+      },
+      "113": {
+        "enumerator": "Devendra Prajapat",
+        "userId": "ev_0919009_devendrapr"
+      }
+    }
+  },
+  "12": {
+    "supervisor": "Mukesh Chandra Gurjar",
+    "hlbs": {
+      "14": {
+        "enumerator": "Ramniwas Bairwa",
+        "userId": "ev_0919009_ramniwasba"
+      },
+      "15": {
+        "enumerator": "Deepak Kumar Sen",
+        "userId": "ev_0919009_deepakkuma"
+      },
+      "16": {
+        "enumerator": "SUKHA SINGH RAWAT",
+        "userId": "ev_0919009_sukhasingh"
+      },
+      "17": {
+        "enumerator": "Debi Singh Shekhawat",
+        "userId": "ev_0919009_debisinghs"
+      },
+      "62": {
+        "enumerator": "Jeetram Jat",
+        "userId": "ev_0919009_jeetramjat"
+      },
+      "63": {
+        "enumerator": "SULTAN LAL MEENA",
+        "userId": "ev_0919009_sultanlalm"
+      },
+      "64": {
+        "enumerator": "SULTAN LAL MEENA",
+        "userId": "ev_0919009_sultanlalm"
+      },
+      "66": {
+        "enumerator": "Ramniwas Bairwa",
+        "userId": "ev_0919009_ramniwasba"
+      }
+    }
+  },
+  "13": {
+    "supervisor": "Dilip Singh Rathore",
+    "hlbs": {
+      "84": {
+        "enumerator": "Pukhraj Bairwa",
+        "userId": "ev_0919009_pukhrajbai_1"
+      },
+      "85": {
+        "enumerator": "Sunil Kumar Meghwanshi",
+        "userId": "ev_0919009_sunilkumar"
+      },
+      "86": {
+        "enumerator": "Azharuddin mansuri",
+        "userId": "ev_0919009_azharuddin"
+      },
+      "87": {
+        "enumerator": "Chetan Hinduniya",
+        "userId": "ev_0919009_chetanhind"
+      },
+      "88": {
+        "enumerator": "Ramesh chand Kahar",
+        "userId": "ev_0919009_rameshchan"
+      },
+      "89": {
+        "enumerator": "Omprakash choudhary",
+        "userId": "ev_0919009_omprakashc"
+      }
+    }
+  },
+  "14": {
+    "supervisor": "Dilip Singh Rathore",
+    "hlbs": {
+      "92": {
+        "enumerator": "Prem Chand",
+        "userId": "ev_0919009_premchand"
+      },
+      "93": {
+        "enumerator": "Raghunath Choudhary",
+        "userId": "ev_0919009_raghunathc"
+      },
+      "94": {
+        "enumerator": "Anand Kumar Udai",
+        "userId": "ev_0919009_anandkumar"
+      },
+      "95": {
+        "enumerator": "ROHIT MALAKAR",
+        "userId": "ev_0919009_rohitmalak"
+      },
+      "96": {
+        "enumerator": "Lalit Kishore Sharma",
+        "userId": "ev_0919009_lalitkisho"
+      },
+      "97": {
+        "enumerator": "Shanti Lal Sadhu",
+        "userId": "ev_0919009_shantilals"
+      }
+    }
+  },
+  "15": {
+    "supervisor": "Dinesh Kumar Kumawat",
+    "hlbs": {
+      "90": {
+        "enumerator": "Mohan Lal Sain",
+        "userId": "ev_0919009_mohanlalsa"
+      },
+      "91": {
+        "enumerator": "Pramod Kumar Sharma",
+        "userId": "ev_0919009_pramodkuma"
+      },
+      "98": {
+        "enumerator": "Ishwar Lal Vaishnav",
+        "userId": "ev_0919009_ishwarlalv"
+      },
+      "99": {
+        "enumerator": "Jasraj Gurjar",
+        "userId": "ev_0919009_jasrajgurj"
+      },
+      "100": {
+        "enumerator": "Jamnalal jat",
+        "userId": "ev_0919009_jamnalalja"
+      },
+      "101": {
+        "enumerator": "Kavita Kumari Meena",
+        "userId": "ev_0919009_kavitakuma"
+      },
+      "103": {
+        "enumerator": "Jamnalal jat",
+        "userId": "ev_0919009_jamnalalja"
+      }
+    }
+  },
+  "16": {
+    "supervisor": "Arvind Kumar Sen",
+    "hlbs": {
+      "79": {
+        "enumerator": "Mohammad Ilyas",
+        "userId": "ev_0919009_mohammadil"
+      },
+      "80": {
+        "enumerator": "ABDUL MOHSIN KHAN",
+        "userId": "ev_0919009_abdulmohsi"
+      },
+      "81": {
+        "enumerator": "Chandmal Chandel",
+        "userId": "ev_0919009_chandmalch"
+      },
+      "82": {
+        "enumerator": "Arjun Khatik",
+        "userId": "ev_0919009_arjunkhati"
+      },
+      "83": {
+        "enumerator": "Paras Mal Vaishav",
+        "userId": "ev_0919009_parasmalva"
+      },
+      "102": {
+        "enumerator": "Nisar Ahmad",
+        "userId": "ev_0919009_nisarahmad"
+      }
+    }
+  },
+  "17": {
+    "supervisor": "Ramdayal Regar",
+    "hlbs": {
+      "67": {
+        "enumerator": "Ajay Singh Devra",
+        "userId": "ev_0919009_ajaysinghd"
+      },
+      "68": {
+        "enumerator": "Ram Gopal Bairwa",
+        "userId": "ev_0919009_ramgopalba"
+      },
+      "69": {
+        "enumerator": "Sandeep Bokoliya",
+        "userId": "ev_0919009_sandeepbok"
+      },
+      "70": {
+        "enumerator": "Dharmendra Kumar Vaishnav",
+        "userId": "ev_0919009_dharmendra_1"
+      },
+      "71": {
+        "enumerator": "Rinku Jat",
+        "userId": "ev_0919009_rinkujat"
+      },
+      "72": {
+        "enumerator": "Devendra Kumawat",
+        "userId": "ev_0919009_devendraku"
+      }
+    }
+  },
+  "18": {
+    "supervisor": "Omvrat",
+    "hlbs": {
+      "73": {
+        "enumerator": "Akash Saini",
+        "userId": "ev_0919009_akashsaini"
+      },
+      "74": {
+        "enumerator": "Dhanraj Bairwa",
+        "userId": "ev_0919009_dhanrajbai"
+      },
+      "75": {
+        "enumerator": "Sajjan Singh Gaur",
+        "userId": "ev_0919009_sajjansing"
+      },
+      "76": {
+        "enumerator": "Pawan Kumar Joshi",
+        "userId": "ev_0919009_pawankumar"
+      },
+      "77": {
+        "enumerator": "Radheshyam Jangid",
+        "userId": "ev_0919009_radheshyam"
+      },
+      "78": {
+        "enumerator": "Bhartaraj Meena",
+        "userId": "ev_0919009_bhartarajm"
+      }
+    }
+  },
+  "19": {
+    "supervisor": "Rang Lal Bairwa",
+    "hlbs": {
+      "110": {
+        "enumerator": "Vishnu Gurjar",
+        "userId": "ev_0919009_vishnugurj"
+      },
+      "111": {
+        "enumerator": "vinod bhambhi",
+        "userId": "ev_0919009_vinodbhamb"
+      },
+      "127": {
+        "enumerator": "Surendra Kumar Lohiya",
+        "userId": "ev_0919009_surendraku"
+      },
+      "128": {
+        "enumerator": "LAXMAN KUMAR BAIRWA",
+        "userId": "ev_0919009_laxmankuma"
+      },
+      "129": {
+        "enumerator": "vinod bhambhi",
+        "userId": "ev_0919009_vinodbhamb"
+      },
+      "175": {
+        "enumerator": "Kuldeep Mishra",
+        "userId": "ev_0919009_kuldeepmis"
+      },
+      "177": {
+        "enumerator": "Abhishek Sharma",
+        "userId": "ev_0919009_abhisheksh"
+      }
+    }
+  },
+  "20": {
+    "supervisor": "MANA LAL MALI",
+    "hlbs": {
+      "120": {
+        "enumerator": "Sunil Kumar Gauttam",
+        "userId": "ev_0919009_sunilkumar_1"
+      },
+      "121": {
+        "enumerator": "Dileep Singh Kaviya",
+        "userId": "ev_0919009_dileepsing"
+      },
+      "122": {
+        "enumerator": "Gopal Mali",
+        "userId": "ev_0919009_gopalmali"
+      },
+      "123": {
+        "enumerator": "Balram Choudhary",
+        "userId": "ev_0919009_balramchou"
+      },
+      "124": {
+        "enumerator": "Surendra Singh Rathore",
+        "userId": "ev_0919009_surendrasi"
+      },
+      "125": {
+        "enumerator": "Gopal Mali",
+        "userId": "ev_0919009_gopalmali"
+      },
+      "126": {
+        "enumerator": "Bhanwar Lal Sharma",
+        "userId": "ev_0919009_bhanwarlal_2"
+      }
+    }
+  },
+  "21": {
+    "supervisor": "Nitish Kumar Sukaria",
+    "hlbs": {
+      "173": {
+        "enumerator": "Mahender Kumar",
+        "userId": "ev_0919009_mahendraku"
+      },
+      "174": {
+        "enumerator": "Hemraj Prajapat",
+        "userId": "ev_0919009_hemrajpraj"
+      },
+      "176": {
+        "enumerator": "lucky parwez",
+        "userId": "ev_0919009_luckyparwe"
+      },
+      "178": {
+        "enumerator": "Naresh Kumar Sharma",
+        "userId": "ev_0919009_nareshkuma"
+      },
+      "179": {
+        "enumerator": "Ahilya Sharma",
+        "userId": "ev_0919009_ahilyashar"
+      },
+      "180": {
+        "enumerator": "Rajendra nath Sidh",
+        "userId": "ev_0919009_rajendrana"
+      }
+    }
+  },
+  "22": {
+    "supervisor": "Mahesh Kumar Bunkar",
+    "hlbs": {
+      "169": {
+        "enumerator": "Shanker Lal Bhambi",
+        "userId": "ev_0919009_shankarlal"
+      },
+      "170": {
+        "enumerator": "Deepak Nakwal",
+        "userId": "ev_0919009_deepaknakw"
+      },
+      "171": {
+        "enumerator": "Shyoji Ram Bairwa",
+        "userId": "ev_0919009_shyojiramb"
+      },
+      "182": {
+        "enumerator": "Zahid Hussain Ansari",
+        "userId": "ev_0919009_zahidhussa"
+      },
+      "183": {
+        "enumerator": "Panchu lal Meghvanshi",
+        "userId": "ev_0919009_panchulalm"
+      },
+      "184": {
+        "enumerator": "Abdul Hanan Ansari",
+        "userId": "ev_0919009_abdulhanan"
+      }
+    }
+  },
+  "23": {
+    "supervisor": "GOVIND RAM JANJGID",
+    "hlbs": {
+      "132": {
+        "enumerator": "Gajraj Bairwa",
+        "userId": "ev_0919009_gajrajbair"
+      },
+      "133": {
+        "enumerator": "Shyam Singh Shekhawat",
+        "userId": "ev_0919009_shyamsingh"
+      },
+      "134": {
+        "enumerator": "MAHAVEER PRASAD JANGID",
+        "userId": "ev_0919009_mahaveerpr"
+      },
+      "166": {
+        "enumerator": "Sanwar Nath Yogi",
+        "userId": "ev_0919009_sanwarnath"
+      },
+      "167": {
+        "enumerator": "Satyanarayan Bairwa",
+        "userId": "ev_0919009_satyanaray_3"
+      },
+      "172": {
+        "enumerator": "Tara Vyas",
+        "userId": "ev_0919009_taravyas"
+      }
+    }
+  },
+  "24": {
+    "supervisor": "Mohammad Tayyab Khan",
+    "hlbs": {
+      "105": {
+        "enumerator": "BHARAT BHUSHAN PANWAR",
+        "userId": "ev_0919009_bharatbhus"
+      },
+      "106": {
+        "enumerator": "Hansraj Gurjar",
+        "userId": "ev_0919009_hansrajgur_1"
+      },
+      "107": {
+        "enumerator": "Dinesh Kumar Swarnkar",
+        "userId": "ev_0919009_dineshkuma"
+      },
+      "108": {
+        "enumerator": "Anil Kumar Rao",
+        "userId": "ev_0919009_anilkumar"
+      },
+      "109": {
+        "enumerator": "Anil Kumar Rao",
+        "userId": "ev_0919009_anilkumar"
+      },
+      "130": {
+        "enumerator": "Ummed Singh Dewra",
+        "userId": "ev_0919009_ummedsingh"
+      },
+      "131": {
+        "enumerator": "BHARAT BHUSHAN PANWAR",
+        "userId": "ev_0919009_bharatbhus"
+      }
+    }
+  },
+  "25": {
+    "supervisor": "Suresh Chandra Jangid",
+    "hlbs": {
+      "104": {
+        "enumerator": "Shanti Lal Jat",
+        "userId": "ev_0919009_shantilalj_1"
+      },
+      "135": {
+        "enumerator": "Rajveer Singh Rawat",
+        "userId": "ev_0919009_rajveersin"
+      },
+      "136": {
+        "enumerator": "Durgesh Kumar Prajapat",
+        "userId": "ev_0919009_durgeshkum_1"
+      },
+      "137": {
+        "enumerator": "vinod kumar meena",
+        "userId": "ev_0919009_vinodkumar_1"
+      },
+      "138": {
+        "enumerator": "Harish Sagar",
+        "userId": "ev_0919009_harishsaga"
+      },
+      "139": {
+        "enumerator": "Dinesh Kumar Regar",
+        "userId": "ev_0919009_dineshkuma_1"
+      }
+    }
+  },
+  "26": {
+    "supervisor": "Murali Yadav",
+    "hlbs": {
+      "141": {
+        "enumerator": "Omprakash Sen",
+        "userId": "ev_0919009_omprakashs"
+      },
+      "142": {
+        "enumerator": "Badri Narayan Jat",
+        "userId": "ev_0919009_badrinaray"
+      },
+      "154": {
+        "enumerator": "Khushi raj Saini",
+        "userId": "ev_0919009_khushirajs"
+      },
+      "155": {
+        "enumerator": "Dilkhush Vaishnav",
+        "userId": "ev_0919009_dilkhushva"
+      },
+      "156": {
+        "enumerator": "Mukesh Bairwa",
+        "userId": "ev_0919009_mukeshbair"
+      },
+      "157": {
+        "enumerator": "Mahaveer Singh Devda",
+        "userId": "ev_0919009_mahaveersi"
+      }
+    }
+  },
+  "27": {
+    "supervisor": "Chandraprakash Damami",
+    "hlbs": {
+      "140": {
+        "enumerator": "Ashish Chaudhary",
+        "userId": "ev_0919009_ashishchau"
+      },
+      "143": {
+        "enumerator": "Rakesh Choudhary",
+        "userId": "ev_0919009_rakeshchou"
+      },
+      "144": {
+        "enumerator": "Ajay Kumar Pancholi",
+        "userId": "ev_0919009_ajaykumarp"
+      },
+      "145": {
+        "enumerator": "Bablu Lal Meena",
+        "userId": "ev_0919009_bablulalme"
+      },
+      "146": {
+        "enumerator": "Bhagchand Tank",
+        "userId": "ev_0919009_bhagchandt"
+      },
+      "153": {
+        "enumerator": "Hari Narayan Yadav",
+        "userId": "ev_0919009_harinaraya"
+      }
+    }
+  },
+  "28": {
+    "supervisor": "Balram Chaudhary",
+    "hlbs": {
+      "160": {
+        "enumerator": "Ram prasad Kharol",
+        "userId": "ev_0919009_ramprasadk"
+      },
+      "161": {
+        "enumerator": "Ashok Kumar Mali",
+        "userId": "ev_0919009_ashokkumar_1"
+      },
+      "162": {
+        "enumerator": "Mukesh Singh",
+        "userId": "ev_0919009_mukeshsing"
+      },
+      "163": {
+        "enumerator": "Sanwar Lal Sharma",
+        "userId": "ev_0919009_sanwarlals"
+      },
+      "164": {
+        "enumerator": "Rakesh kumar Pareek",
+        "userId": "ev_0919009_rakeshkuma"
+      },
+      "165": {
+        "enumerator": "Ashok Kumar Kamar",
+        "userId": "ev_0919009_ashokkumar_2"
+      }
+    }
+  },
+  "29": {
+    "supervisor": "Mahaveer Bairwa",
+    "hlbs": {
+      "158": {
+        "enumerator": "Rajkumar Bairwa",
+        "userId": "ev_0919009_rajkumarba"
+      },
+      "159": {
+        "enumerator": "Ramswaroop Choudhary",
+        "userId": "ev_0919009_ramswaroop_1"
+      },
+      "168": {
+        "enumerator": "Hansraj Jat",
+        "userId": "ev_0919009_hansrajjat"
+      },
+      "185": {
+        "enumerator": "Narayan Lal Bairwa",
+        "userId": "ev_0919009_narayanlal"
+      },
+      "197": {
+        "enumerator": "Satyanarayan Meena",
+        "userId": "ev_0919009_satyanaray"
+      },
+      "234": {
+        "enumerator": "Gyaneshwar Prasad Prajapat",
+        "userId": "ev_0919009_gyaneshwar"
+      }
+    }
+  },
+  "30": {
+    "supervisor": "Govind Narayan Tripathi",
+    "hlbs": {
+      "191": {
+        "enumerator": "HEMANT KUMAR SUKARIYA",
+        "userId": "ev_0919009_hemantkuma"
+      },
+      "192": {
+        "enumerator": "Ganesh Gurjar",
+        "userId": "ev_0919009_ganeshgurj"
+      },
+      "193": {
+        "enumerator": "Sajan Singh Chouhan",
+        "userId": "ev_0919009_sajansingh"
+      },
+      "194": {
+        "enumerator": "Omprakash Vyas",
+        "userId": "ev_0919009_omprakashv"
+      },
+      "195": {
+        "enumerator": "Kishan Lal Bairwa",
+        "userId": "ev_0919009_kishanlalb"
+      },
+      "196": {
+        "enumerator": "Jitendra Yadav",
+        "userId": "ev_0919009_jitendraya"
+      }
+    }
+  },
+  "31": {
+    "supervisor": "Kamal Kumar Bairwa",
+    "hlbs": {
+      "181": {
+        "enumerator": "KRISHNA KUMAR TIWARI",
+        "userId": "ev_0919009_krishnakum"
+      },
+      "186": {
+        "enumerator": "Vishnu Kumar Vaishnav",
+        "userId": "ev_0919009_vishnukuma"
+      },
+      "187": {
+        "enumerator": "Madan Lal Bairwa",
+        "userId": "ev_0919009_madanlalba"
+      },
+      "188": {
+        "enumerator": "Ranjeet Bairwa",
+        "userId": "ev_0919009_ranjitbair"
+      },
+      "189": {
+        "enumerator": "Mahavir Prasad Bairwa",
+        "userId": "ev_0919009_mahavirpra"
+      },
+      "190": {
+        "enumerator": "Budh Raj Mali",
+        "userId": "ev_0919009_budhrajmal"
+      }
+    }
+  },
+  "32": {
+    "supervisor": "Ratan Lal Jangir",
+    "hlbs": {
+      "231": {
+        "enumerator": "Rajaram Sahu",
+        "userId": "ev_0919009_rajaramsah"
+      },
+      "232": {
+        "enumerator": "Bhupender Singh Charan",
+        "userId": "ev_0919009_bhupendras"
+      },
+      "233": {
+        "enumerator": "Dashrath Bairwa",
+        "userId": "ev_0919009_dashrathba"
+      },
+      "235": {
+        "enumerator": "Manoj Kumar Dadhich",
+        "userId": "ev_0919009_manojkumar"
+      },
+      "236": {
+        "enumerator": "Vijay Singh",
+        "userId": "ev_0919009_vijaysingh"
+      },
+      "237": {
+        "enumerator": "Harish Kumar Sharma",
+        "userId": "ev_0919009_harishkuma_1"
+      }
+    }
+  },
+  "33": {
+    "supervisor": "Rajaneesh Kumar Jangid",
+    "hlbs": {
+      "230": {
+        "enumerator": "Devaraj Gurjar",
+        "userId": "ev_0919009_devarajgur"
+      },
+      "238": {
+        "enumerator": "Shivraj Choudhary",
+        "userId": "ev_0919009_shivrajcho"
+      },
+      "239": {
+        "enumerator": "Raghuveer Prasad Bhambi",
+        "userId": "ev_0919009_raghuveerp"
+      },
+      "240": {
+        "enumerator": "UMRAO SINGH BARI",
+        "userId": "ev_0919009_umraosingh"
+      },
+      "241": {
+        "enumerator": "SUMAN PRAJAPAT",
+        "userId": "ev_0919009_sumanpraja"
+      },
+      "242": {
+        "enumerator": "Raju Rebari",
+        "userId": "ev_0919009_rajurebari"
+      }
+    }
+  },
+  "34": {
+    "supervisor": "Manoj Kumar Jain",
+    "hlbs": {
+      "198": {
+        "enumerator": "Mahavir Prasad Prajapat",
+        "userId": "ev_0919009_mahavirpra_1"
+      },
+      "199": {
+        "enumerator": "Banwari Lal Goswami",
+        "userId": "ev_0919009_banwarilal"
+      },
+      "200": {
+        "enumerator": "Vishnu Prasad Sharma",
+        "userId": "ev_0919009_vishnupras"
+      },
+      "214": {
+        "enumerator": "Abdul Kalam",
+        "userId": "ev_0919009_abdulkalam"
+      },
+      "217": {
+        "enumerator": "Bablu Meghwal",
+        "userId": "ev_0919009_bablumeghw"
+      },
+      "218": {
+        "enumerator": "Bhupendra Singh Rathore",
+        "userId": "ev_0919009_bhupendras_2"
+      }
+    }
+  },
+  "35": {
+    "supervisor": "Bhagchand Jain",
+    "hlbs": {
+      "201": {
+        "enumerator": "Murlidhar Kumawat",
+        "userId": "ev_0919009_murlidhark"
+      },
+      "202": {
+        "enumerator": "Ram kunwar Kumhar",
+        "userId": "ev_0919009_ramkunwark"
+      },
+      "203": {
+        "enumerator": "Dhanraj Mochi",
+        "userId": "ev_0919009_dhanrajmoc"
+      },
+      "204": {
+        "enumerator": "Abhay Singh Panwar",
+        "userId": "ev_0919009_abhaysingh"
+      },
+      "205": {
+        "enumerator": "Bhagchand Bairwa",
+        "userId": "ev_0919009_bhagchandb"
+      },
+      "215": {
+        "enumerator": "Kaluram Soyal",
+        "userId": "ev_0919009_kaluramsoy"
+      },
+      "216": {
+        "enumerator": "Dhanraj Mochi",
+        "userId": "ev_0919009_dhanrajmoc"
+      }
+    }
+  },
+  "36": {
+    "supervisor": "RAMSINGH DHAKAR",
+    "hlbs": {
+      "147": {
+        "enumerator": "Rajendra Prasad",
+        "userId": "ev_0919009_rajendrapr"
+      },
+      "148": {
+        "enumerator": "MUKUT MANI DVIVEDI",
+        "userId": "ev_0919009_mukutmanid"
+      },
+      "149": {
+        "enumerator": "RAMESH CHANDRA KHATI",
+        "userId": "ev_0919009_rameshchan_1"
+      },
+      "150": {
+        "enumerator": "GYARSI LAL BAIRWA",
+        "userId": "ev_0919009_gyarsilalb"
+      },
+      "151": {
+        "enumerator": "Mohan Lal Jajoria",
+        "userId": "ev_0919009_mohanlalja"
+      },
+      "152": {
+        "enumerator": "Durgesh Kumar Meghwanshi",
+        "userId": "ev_0919009_durgeshkum"
+      }
+    }
+  },
+  "37": {
+    "supervisor": "Kanwari Lal Soni",
+    "hlbs": {
+      "206": {
+        "enumerator": "Yadveer Singh",
+        "userId": "ev_0919009_yadveersin"
+      },
+      "207": {
+        "enumerator": "Dharmendra Choudhary",
+        "userId": "ev_0919009_dharmendra"
+      },
+      "208": {
+        "enumerator": "Narendra Kumar Verma",
+        "userId": "ev_0919009_narendraku"
+      },
+      "209": {
+        "enumerator": "Ramswaroop Bairwa",
+        "userId": "ev_0919009_ramswaroop"
+      },
+      "210": {
+        "enumerator": "Ramswaroop Bairwa",
+        "userId": "ev_0919009_ramswaroop"
+      },
+      "211": {
+        "enumerator": "Dinesh Sad",
+        "userId": "ev_0919009_dineshsaad"
+      },
+      "212": {
+        "enumerator": "Gaourav Kumar",
+        "userId": "ev_0919009_gauravkuma"
+      },
+      "213": {
+        "enumerator": "Dharmendra Choudhary",
+        "userId": "ev_0919009_dharmendra"
+      }
+    }
+  },
+  "38": {
+    "supervisor": "Shankar Lal Saini",
+    "hlbs": {
+      "219": {
+        "enumerator": "Lokesh Jat",
+        "userId": "ev_0919009_lokeshjat"
+      },
+      "220": {
+        "enumerator": "Hem Singh",
+        "userId": "ev_0919009_hemsingh"
+      },
+      "221": {
+        "enumerator": "Gangaram Regar",
+        "userId": "ev_0919009_gangaramre"
+      },
+      "227": {
+        "enumerator": "Shantilal Jain",
+        "userId": "ev_0919009_shantilalj"
+      },
+      "228": {
+        "enumerator": "Prithviraj meena",
+        "userId": "ev_0919009_prithviraj"
+      },
+      "229": {
+        "enumerator": "Om Prakash Doria",
+        "userId": "ev_0919009_omprakashd"
+      }
+    }
+  },
+  "39": {
+    "supervisor": "Gajendra Saini",
+    "hlbs": {
+      "222": {
+        "enumerator": "Balmukand Khati",
+        "userId": "ev_0919009_balmukandk"
+      },
+      "223": {
+        "enumerator": "Avinash Sharma",
+        "userId": "ev_0919009_avinashsha"
+      },
+      "224": {
+        "enumerator": "Pankaj Tiwari",
+        "userId": "ev_0919009_pankajtiwa"
+      },
+      "225": {
+        "enumerator": "Shivraj Prajapat",
+        "userId": "ev_0919009_shivrajpra"
+      },
+      "226": {
+        "enumerator": "Norat Mal Balai",
+        "userId": "ev_0919009_noratmalba"
+      }
+    }
+  }
+};
+
     let isDrawing = false;
     let isSignatureDrawn = false;
     let sigCanvas, sigCtx;
 
     // Set default date to today
     document.addEventListener('DOMContentLoaded', function () {
+      // Open role selection modal when application opens
+      openRoleModal();
+      
+      // Populate Circle dropdown
+      populateCircleDropdown();
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('inspection_date').value = today;
 
@@ -1451,10 +3063,11 @@
       document.getElementById('r_sig_date').textContent = formattedDate;
       document.getElementById('r_district').textContent = data.district;
       document.getElementById('r_block').textContent = data.block;
-      document.getElementById('r_eb').textContent = data.eb_number;
+      
       document.getElementById('r_enumerator').textContent = data.enumerator_name;
       document.getElementById('r_supervisor').textContent = data.supervisor_name;
       document.getElementById('r_supervisor_circle').textContent = data.supervisor_circle_no;
+      document.getElementById('r_hlb').textContent = data.hlb_no || '-';
 
       document.getElementById('r_assigned').textContent = data.assigned_houses;
       document.getElementById('r_completed').textContent = data.completed_houses;
@@ -1519,6 +3132,260 @@
       document.getElementById('formView').style.display = 'block';
       document.getElementById('reportView').style.display = 'none';
       window.scrollTo(0, 0);
+    }
+
+    // ROLE MODAL JAVASCRIPT FUNCTIONS
+    function openRoleModal() {
+      document.getElementById('roleModal').style.display = 'flex';
+      
+      // Reset modal selections
+      const radios = document.getElementsByName('modal_role');
+      for (let r of radios) r.checked = false;
+      
+      document.getElementById('modal_dynamic_inputs').style.display = 'none';
+      document.getElementById('modal_supervisor_fields').style.display = 'none';
+      document.getElementById('modal_other_fields').style.display = 'none';
+      document.getElementById('modal_confirm_btn').disabled = true;
+      
+      // Reset inputs
+      document.getElementById('modal_circle_select').value = '';
+      document.getElementById('modal_hlb_container').style.display = 'none';
+      document.getElementById('modal_hlb_select').value = '';
+      document.getElementById('modal_info_card').style.display = 'none';
+      document.getElementById('modal_other_role_input').value = '';
+    }
+
+    function populateCircleDropdown() {
+      const select = document.getElementById('modal_circle_select');
+      if (!select) return;
+      // Remove existing options except first
+      while (select.options.length > 1) {
+        select.remove(1);
+      }
+      // Sort circles numerically
+      const sortedCircles = Object.keys(CENSUS_DATA).sort((a, b) => parseInt(a) - parseInt(b));
+      sortedCircles.forEach(circle => {
+        const opt = document.createElement('option');
+        opt.value = circle;
+        opt.textContent = 'सर्कल ' + circle + ' (' + CENSUS_DATA[circle].supervisor + ')';
+        select.appendChild(opt);
+      });
+    }
+
+    function handleModalRoleChange(role) {
+      const dynamicDiv = document.getElementById('modal_dynamic_inputs');
+      const supervisorDiv = document.getElementById('modal_supervisor_fields');
+      const otherDiv = document.getElementById('modal_other_fields');
+      const trainerDiv = document.getElementById('modal_trainer_fields');
+      
+      dynamicDiv.style.display = 'block';
+      supervisorDiv.style.display = 'block';
+      
+      if (role === 'Other') {
+        otherDiv.style.display = 'block';
+        if (trainerDiv) trainerDiv.style.display = 'none';
+      } else if (role === 'Field Trainer (फील्ड ट्रेनर)') {
+        otherDiv.style.display = 'none';
+        if (trainerDiv) trainerDiv.style.display = 'block';
+      } else {
+        otherDiv.style.display = 'none';
+        if (trainerDiv) trainerDiv.style.display = 'none';
+      }
+      
+      validateModalForm();
+    }
+
+    function handleModalCircleChange() {
+      const circle = document.getElementById('modal_circle_select').value;
+      const hlbContainer = document.getElementById('modal_hlb_container');
+      const hlbSelect = document.getElementById('modal_hlb_select');
+      const infoCard = document.getElementById('modal_info_card');
+      
+      // Reset hlb selection
+      while (hlbSelect.options.length > 1) {
+        hlbSelect.remove(1);
+      }
+      infoCard.style.display = 'none';
+      
+      if (circle && CENSUS_DATA[circle]) {
+        hlbContainer.style.display = 'block';
+        const hlbs = CENSUS_DATA[circle].hlbs;
+        // Sort HLBs numerically
+        const sortedHlbs = Object.keys(hlbs).sort((a, b) => parseInt(a) - parseInt(b));
+        sortedHlbs.forEach(hlb => {
+          const opt = document.createElement('option');
+          opt.value = hlb;
+          opt.textContent = 'HLB ' + hlb + ' (' + hlbs[hlb].enumerator + ')';
+          hlbSelect.appendChild(opt);
+        });
+      } else {
+        hlbContainer.style.display = 'none';
+      }
+      
+      validateModalForm();
+    }
+
+    function handleModalHlbChange() {
+      const circle = document.getElementById('modal_circle_select').value;
+      const hlb = document.getElementById('modal_hlb_select').value;
+      const infoCard = document.getElementById('modal_info_card');
+      
+      if (circle && hlb && CENSUS_DATA[circle] && CENSUS_DATA[circle].hlbs[hlb]) {
+        const supervisorName = CENSUS_DATA[circle].supervisor;
+        const enumeratorName = CENSUS_DATA[circle].hlbs[hlb].enumerator;
+        const enumeratorUserId = CENSUS_DATA[circle].hlbs[hlb].userId;
+        
+        document.getElementById('modal_info_supervisor').textContent = supervisorName;
+        document.getElementById('modal_info_enumerator').textContent = enumeratorName;
+        document.getElementById('modal_info_userid').textContent = enumeratorUserId;
+        
+        infoCard.style.display = 'block';
+      } else {
+        infoCard.style.display = 'none';
+      }
+      
+      validateModalForm();
+    }
+
+    function validateModalForm() {
+      const selectedRadio = document.querySelector('input[name="modal_role"]:checked');
+      const confirmBtn = document.getElementById('modal_confirm_btn');
+      
+      if (!selectedRadio) {
+        confirmBtn.disabled = true;
+        return;
+      }
+      
+      const role = selectedRadio.value;
+      const circle = document.getElementById('modal_circle_select').value;
+      const hlb = document.getElementById('modal_hlb_select').value;
+      
+      const hasCircleAndHlb = (circle && hlb);
+      
+      if (role === 'Other') {
+        const otherVal = document.getElementById('modal_other_role_input').value.trim();
+        confirmBtn.disabled = !(hasCircleAndHlb && otherVal !== '');
+      } else if (role === 'Field Trainer (फील्ड ट्रेनर)') {
+        const trainerSelect = document.getElementById('modal_trainer_select');
+        const trainerVal = trainerSelect ? trainerSelect.value : '';
+        confirmBtn.disabled = !(hasCircleAndHlb && trainerVal !== '');
+      } else {
+        confirmBtn.disabled = !hasCircleAndHlb;
+      }
+    }
+
+    function setRoleField(isOther, value) {
+      const selectEl = document.getElementById('inspector_role');
+      let textEl = document.getElementById('inspector_role_text');
+      
+      if (isOther) {
+        if (!textEl) {
+          textEl = document.createElement('input');
+          textEl.type = 'text';
+          textEl.id = 'inspector_role_text';
+          textEl.name = 'inspector_role';
+          textEl.required = true;
+          textEl.placeholder = 'अपना पद लिखें (Enter your role)';
+          textEl.className = selectEl.className;
+          textEl.addEventListener('input', function() {
+            const titleEl = document.getElementById('screenTitle');
+            const badgeEl = document.getElementById('roleBadge');
+            titleEl.textContent = 'जनगणना निरीक्षण रिपोर्ट - ' + this.value;
+            badgeEl.textContent = this.value;
+            badgeEl.style.backgroundColor = '#d97706';
+          });
+          selectEl.parentNode.appendChild(textEl);
+        }
+        selectEl.style.display = 'none';
+        selectEl.disabled = true;
+        textEl.style.display = 'block';
+        textEl.disabled = false;
+        if (value) {
+          textEl.value = value;
+          textEl.dispatchEvent(new Event('input'));
+        }
+      } else {
+        selectEl.style.display = 'block';
+        selectEl.disabled = false;
+        if (textEl) {
+          textEl.style.display = 'none';
+          textEl.disabled = true;
+        }
+        if (value) {
+          selectEl.value = value;
+          updateRoleUI();
+        }
+      }
+    }
+
+    function confirmRoleSelection() {
+      const selectedRadio = document.querySelector('input[name="modal_role"]:checked');
+      if (!selectedRadio) return;
+      
+      const role = selectedRadio.value;
+      const circle = document.getElementById('modal_circle_select').value;
+      const hlb = document.getElementById('modal_hlb_select').value;
+      
+      // Enable Change Role Link
+      document.getElementById('changeRoleLink').style.display = 'inline';
+      
+      // Helper to make elements readonly/editable
+      const setReadOnly = (id, readOnly) => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (readOnly) {
+            el.setAttribute('readonly', 'true');
+            el.style.backgroundColor = '#e2e8f0';
+          } else {
+            el.removeAttribute('readonly');
+            el.style.backgroundColor = '#fafafa';
+          }
+        }
+      };
+
+      if (role === 'Other') {
+        const customRole = document.getElementById('modal_other_role_input').value.trim();
+        setRoleField(true, customRole);
+      } else {
+        setRoleField(false, role);
+      }
+
+      if (circle && hlb && CENSUS_DATA[circle] && CENSUS_DATA[circle].hlbs[hlb]) {
+        const data = CENSUS_DATA[circle].hlbs[hlb];
+        const supervisorName = CENSUS_DATA[circle].supervisor;
+        
+        // 1. Populate Supervisor details and make them readonly
+        document.getElementById('supervisor_name').value = supervisorName;
+        setReadOnly('supervisor_name', true);
+        document.getElementById('supervisor_circle_no').value = circle;
+        setReadOnly('supervisor_circle_no', true);
+        
+        // 2. Populate HLB and Enumerator details and make them readonly
+        document.getElementById('hlb_no').value = hlb;
+        setReadOnly('hlb_no', true);
+        document.getElementById('enumerator_name').value = data.enumerator;
+        setReadOnly('enumerator_name', true);
+        
+        // 3. Handle Inspector Name:
+        if (role === 'Supervisor (पर्यवेक्षक)') {
+          document.getElementById('inspector_name').value = supervisorName;
+          setReadOnly('inspector_name', true);
+        } else if (role === 'Charge Officer (चार्ज अधिकारी)') {
+          document.getElementById('inspector_name').value = 'संजय कुमार सारस्वत';
+          setReadOnly('inspector_name', true);
+        } else if (role === 'Field Trainer (फील्ड ट्रेनर)') {
+          const trainerVal = document.getElementById('modal_trainer_select').value;
+          document.getElementById('inspector_name').value = trainerVal;
+          setReadOnly('inspector_name', true);
+        } else {
+          document.getElementById('inspector_name').value = '';
+          setReadOnly('inspector_name', false);
+          document.getElementById('inspector_name').placeholder = 'अपना नाम दर्ज करें (Enter your name)';
+        }
+      }
+      
+      // Close modal
+      document.getElementById('roleModal').style.display = 'none';
     }
   </script>
 </body>
