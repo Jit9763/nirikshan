@@ -462,59 +462,120 @@
       color: #000000;
     }
 
-    /* PRINT ONLY OVERRIDES & ONE-PAGE OPTIMIZATION */
     @media print {
       @page {
         size: A4 portrait;
-        margin: 8mm 10mm 8mm 10mm;
+        margin: 12mm 15mm;
+      }
+
+      html, body {
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        background-color: #ffffff !important;
+        color: #000000 !important;
       }
 
       body {
-        background-color: #ffffff;
-        color: #000000;
-        padding: 0;
-        margin: 0;
-        font-size: 9.5pt;
-        line-height: 1.35;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 9.5pt !important;
+        line-height: 1.35 !important;
       }
 
       .container {
-        box-shadow: none;
-        border: none;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
+        display: block !important;
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
       }
 
-      /* Hide all interactive elements and admin view in default print */
+      /* Hide all interactive elements and overlays */
       .header-banner .badge,
       .btn-container,
       .success-alert,
       #formView,
-      #adminView,
+      #roleModal,
+      #adminPasswordModal,
+      #loader,
       .no-print {
         display: none !important;
       }
 
-      /* Hide reportView by default in print mode */
+      /* Report View styling in print */
       #reportView {
-        display: none !important;
-      }
-      
-      body.printing-report #reportView {
-        display: block !important;
         padding: 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
         border: none !important;
         max-width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
       }
 
-      /* Tighten layout spacing to guarantee a single page print */
+      /* Admin View styling in print */
+      #adminView {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .admin-tab-content {
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      /* Show print-only header elements */
+      .print-only-section {
+        display: block !important;
+      }
+
+      /* Table formatting for print */
+      table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        margin-top: 15px !important;
+        border: 1px solid #000000 !important;
+      }
+
+      th, td {
+        border: 1px solid #000000 !important;
+        padding: 6px 8px !important;
+        font-size: 9pt !important;
+        color: #000000 !important;
+      }
+
+      th {
+        background-color: #f2f2f2 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+      }
+
+      .table-responsive {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      tr {
+        page-break-inside: avoid !important;
+      }
+
+      .attendance-section-box {
+        margin-bottom: 25px !important;
+      }
+
+      /* Report specific original style elements optimized */
       .print-header {
         margin-bottom: 15px !important;
         padding-bottom: 8px !important;
         border-bottom: 2px double #000000 !important;
+        text-align: center;
       }
 
       .print-header h1 {
@@ -528,16 +589,20 @@
 
       .print-section {
         margin-bottom: 12px !important;
+        page-break-inside: avoid !important;
       }
 
       .print-section-title {
         font-size: 11pt !important;
         margin-bottom: 6px !important;
         padding-bottom: 2px !important;
+        font-weight: bold;
+        border-bottom: 1px solid #000000;
       }
 
       .print-grid,
       .print-grid-3 {
+        display: grid !important;
         gap: 6px 15px !important;
         margin-bottom: 8px !important;
       }
@@ -546,22 +611,26 @@
         font-size: 9.5pt !important;
       }
 
-      #reportView table {
-        margin-top: 6px !important;
-      }
-
-      #reportView th,
-      #reportView td {
-        padding: 5px 8px !important;
-        font-size: 9pt !important;
-      }
-
       .signature-block {
         margin-top: 30px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        page-break-inside: avoid !important;
       }
 
       .sig-line {
         font-size: 9.5pt !important;
+        width: 250px;
+        text-align: center;
+        border-top: 1px solid #000000;
+        padding-top: 5px;
+      }
+
+      .print-grid-4 {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 6px 15px !important;
+        margin-bottom: 8px !important;
       }
     }
 
@@ -1116,96 +1185,6 @@
     /* Hide printing items by default on screen */
     .print-only-section {
       display: none;
-    }
-
-    @media print {
-      @page {
-        size: A4 portrait;
-        margin: 12mm 15mm 12mm 15mm !important;
-      }
-
-      html, body {
-        height: auto !important;
-        min-height: 100% !important;
-        overflow: visible !important;
-      }
-
-      /* Hide regular screen sections when printing admin view */
-      body.printing-admin #formView,
-      body.printing-admin #reportView,
-      body.printing-admin .header-banner,
-      body.printing-admin .no-print,
-      body.printing-admin #adminPasswordModal,
-      body.printing-admin #roleModal,
-      body.printing-admin #loader {
-        display: none !important;
-      }
-      
-      body.printing-admin .container {
-        display: block !important;
-        border: none !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        height: auto !important;
-        overflow: visible !important;
-      }
-
-      body.printing-admin #adminView {
-        display: block !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        height: auto !important;
-        overflow: visible !important;
-      }
-
-      body.printing-admin .admin-tab-content {
-        display: none !important;
-      }
-
-      body.printing-admin .admin-tab-content.printing-active {
-        display: block !important;
-      }
-
-      body.printing-admin .print-only-section {
-        display: block !important;
-      }
-
-      body.printing-admin table {
-        border-collapse: collapse !important;
-        width: 100% !important;
-        margin-top: 15px !important;
-        border: 1px solid #000000 !important;
-      }
-
-      body.printing-admin th,
-      body.printing-admin td {
-        border: 1px solid #000000 !important;
-        padding: 6px 8px !important;
-        font-size: 9pt !important;
-        color: #000000 !important;
-      }
-
-      body.printing-admin th {
-        background-color: #f2f2f2 !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-      }
-
-      body.printing-admin .table-responsive {
-        max-height: none !important;
-        overflow: visible !important;
-      }
-
-      body.printing-admin tr {
-        page-break-inside: avoid !important;
-      }
-
-      body.printing-admin .attendance-section-box {
-        margin-bottom: 25px !important;
-      }
     }
   </style>
 </head>
@@ -4335,21 +4314,9 @@
 
     // Print functionality for Admin Dashboard
     function printActiveReport(printHeaderId) {
-      document.body.classList.add('printing-admin');
-      
-      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('printing-active'));
-      const activeTabContent = document.getElementById(currentAdminTab);
-      activeTabContent.classList.add('printing-active');
-      
-      document.querySelectorAll('.print-only-section').forEach(h => h.style.display = 'none');
-      
-      if (currentAdminTab === 'tab_supervisor') {
-        document.getElementById('print_supervisor_header').style.display = 'block';
-      } else if (currentAdminTab === 'tab_hlb') {
-        document.getElementById('print_hlb_header').style.display = 'block';
+      if (currentAdminTab === 'tab_hlb') {
         document.getElementById('print_hlb_datesub').textContent = 'रिपोर्ट दिनांक: ' + new Date().toLocaleDateString('hi-IN');
       } else if (currentAdminTab === 'tab_attendance') {
-        document.getElementById('print_attendance_header').style.display = 'block';
         const selDate = document.getElementById('attendance_date').value;
         let formattedSelDate = selDate;
         if (selDate) {
@@ -4361,28 +4328,16 @@
         document.getElementById('print_attendance_date_str').textContent = 'निरीक्षण दिनांक: ' + (formattedSelDate || 'आज');
       }
 
-      // Yield thread execution to let mobile browsers apply styles & repaint
-      setTimeout(() => {
+      // Small delay allows the mobile browser rendering engine to paint DOM updates
+      setTimeout(function () {
         window.print();
-        
-        setTimeout(() => {
-          document.body.classList.remove('printing-admin');
-          activeTabContent.classList.remove('printing-active');
-          document.querySelectorAll('.print-only-section').forEach(h => h.style.display = 'none');
-        }, 500);
       }, 150);
     }
 
     // Print functionality for Individual Submission Report
     function printReport() {
-      document.body.classList.add('printing-report');
-      
-      setTimeout(() => {
+      setTimeout(function () {
         window.print();
-        
-        setTimeout(() => {
-          document.body.classList.remove('printing-report');
-        }, 500);
       }, 150);
     }
   </script>
