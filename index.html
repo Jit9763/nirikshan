@@ -4324,32 +4324,76 @@
       document.getElementById('absent_total_badge').textContent = absentList.length;
     }
 
+    // Helper to transliterate Hindi names to English for filenames
+    function transliterateName(name) {
+      const mapping = {
+        'संजय कुमार सारस्वत': 'Sanjay Kumar Saraswat',
+        'राकेश कुमार बिरावत': 'Rakesh Kumar Birawat',
+        'दयानंद मारू': 'Dayanand Maru',
+        'मुकेश रावत': 'Mukesh Rawat',
+        'गंगाविशन प्रजापत': 'Gangavishan Prajapat'
+      };
+      return mapping[name.trim()] || name;
+    }
+
     // Print functionality for Admin Dashboard
     function printActiveReport(printHeaderId) {
-      if (currentAdminTab === 'tab_hlb') {
-        document.getElementById('print_hlb_datesub').textContent = 'रिपोर्ट दिनांक: ' + new Date().toLocaleDateString('hi-IN');
-      } else if (currentAdminTab === 'tab_attendance') {
-        const selDate = document.getElementById('attendance_date').value;
-        let formattedSelDate = selDate;
-        if (selDate) {
-          const parts = selDate.split('-');
-          if (parts.length === 3) {
-            formattedSelDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+      const originalTitle = document.title;
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (currentAdminTab === 'tab_hlb') {
+          document.getElementById('print_hlb_datesub').textContent = 'रिपोर्ट दिनांक: ' + new Date().toLocaleDateString('hi-IN');
+          document.title = `Census_HLB_Progress_Report_${todayStr}`;
+        } else if (currentAdminTab === 'tab_attendance') {
+          const selDate = document.getElementById('attendance_date').value;
+          let formattedSelDate = selDate;
+          if (selDate) {
+            const parts = selDate.split('-');
+            if (parts.length === 3) {
+              formattedSelDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+            }
           }
+          document.getElementById('print_attendance_date_str').textContent = 'निरीक्षण दिनांक: ' + (formattedSelDate || 'आज');
+          document.title = `Census_Attendance_Report_${selDate || todayStr}`;
+        } else if (currentAdminTab === 'tab_supervisor') {
+          document.title = `Census_Supervisor_Report_${todayStr}`;
         }
-        document.getElementById('print_attendance_date_str').textContent = 'निरीक्षण दिनांक: ' + (formattedSelDate || 'आज');
+      } catch (e) {
+        console.error(e);
       }
 
       // Small delay allows the mobile browser rendering engine to paint DOM updates
       setTimeout(function () {
         window.print();
+        setTimeout(function() {
+          document.title = originalTitle;
+        }, 1000);
       }, 150);
     }
 
     // Print functionality for Individual Submission Report
     function printReport() {
+      const originalTitle = document.title;
+      try {
+        const inspectorName = document.getElementById('r_name').textContent.trim() || 'Inspector';
+        const hlbNo = document.getElementById('r_hlb').textContent.replace(/HLB/i, '').trim() || 'N-A';
+        const dateVal = document.getElementById('r_date').textContent.trim() || 'Date';
+        
+        const cleanName = transliterateName(inspectorName)
+          .replace(/[^a-zA-Z0-9\s-_]/g, '')
+          .trim()
+          .replace(/\s+/g, '_');
+        
+        document.title = `Census_Report_HLB_${hlbNo}_${cleanName}_${dateVal}`;
+      } catch (e) {
+        console.error(e);
+      }
+
       setTimeout(function () {
         window.print();
+        setTimeout(function() {
+          document.title = originalTitle;
+        }, 1000);
       }, 150);
     }
   </script>
