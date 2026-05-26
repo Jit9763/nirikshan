@@ -11,8 +11,10 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap"
     rel="stylesheet">
+  <!-- html2pdf.js library for PDF generation and sharing -->
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 
-  <style>
+  <style id="mainStyle">
     /* CSS VARIABLES FOR PREMIUM THEMING */
     :root {
       --primary-color: #0f172a;
@@ -298,6 +300,17 @@
 
     .btn-secondary:hover {
       background-color: #f1f5f9;
+    }
+
+    .btn-success {
+      background-color: #25d366;
+      color: #ffffff;
+      box-shadow: 0 4px 6px rgba(37, 211, 102, 0.15);
+    }
+
+    .btn-success:hover {
+      background-color: #20ba5a;
+      transform: translateY(-1px);
     }
 
     /* LOADER overlay */
@@ -1538,7 +1551,7 @@
     <!-- 2. REPORT PREVIEW / PRINT SCREEN -->
     <div id="reportView">
 
-      <div class="success-alert">
+      <div class="success-alert" data-html2canvas-ignore="true">
         <strong>✓ सफलता:</strong> रिपोर्ट सफलतापूर्वक सुरक्षित कर दी गई है! आप नीचे दी गई रिपोर्ट का प्रिंटआउट ले सकते
         हैं।
       </div>
@@ -1683,7 +1696,7 @@
           दिनांक (Date): <span id="r_sig_date" style="font-weight: 500;"></span>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center; width: 250px;">
-          <img id="r_signature_img" src="" alt="Signature"
+          <img id="r_signature_img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Signature"
             style="max-width: 200px; max-height: 80px; display: none; margin-bottom: 5px;">
           <div class="sig-line" style="width: 100%; border-top: 1px solid #000000; padding-top: 5px;">
             निरीक्षक के हस्ताक्षर (Signature)
@@ -1692,10 +1705,13 @@
       </div>
 
       <!-- ACTIONS FOR SCREEN VIEW -->
-      <div class="btn-container no-print" style="margin-top: 50px;">
+      <div class="btn-container no-print" style="margin-top: 50px;" data-html2canvas-ignore="true">
         <button type="button" class="btn btn-secondary" onclick="editForm()">← वापस फॉर्म में सुधार करें</button>
         <button type="button" class="btn btn-primary" onclick="printReport()">
           🖨️ रिपोर्ट प्रिंट करें (Print Report)
+        </button>
+        <button type="button" class="btn btn-success" id="sharePdfBtn" onclick="shareAsPDF()">
+          🟢 PDF साझा करें (Share PDF)
         </button>
       </div>
 
@@ -3507,6 +3523,7 @@
         sigImg.src = data.signature_base64;
         sigImg.style.display = 'block';
       } else {
+        sigImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         sigImg.style.display = 'none';
       }
 
@@ -4427,6 +4444,307 @@
           document.title = originalTitle;
         }, 1000);
       }, 150);
+    }
+
+    // Generate PDF and open Share Dialog (or download as fallback)
+    function shareAsPDF() {
+      if (typeof html2pdf === 'undefined') {
+        alert('PDF जनरेटर लाइब्रेरी (html2pdf) लोड नहीं हो सकी। कृपया सुनिश्चित करें कि आपका इंटरनेट कनेक्शन सक्रिय है और पेज को पुनः लोड (Reload) करें।');
+        return;
+      }
+      
+      const btn = document.getElementById('sharePdfBtn');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '⏳ PDF तैयार हो रहा है...';
+
+      // 1. Show full-screen loader and style it inline to prevent unstyled flash
+      const loader = document.getElementById('loader');
+      const loaderText = document.getElementById('loaderText');
+      const originalLoaderText = loaderText.textContent;
+      
+      loaderText.textContent = 'PDF रिपोर्ट तैयार की जा रही है, कृपया प्रतीक्षा करें...';
+      loader.style.position = 'fixed';
+      loader.style.top = '0';
+      loader.style.left = '0';
+      loader.style.width = '100%';
+      loader.style.height = '100%';
+      loader.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
+      loader.style.display = 'flex';
+      loader.style.flexDirection = 'column';
+      loader.style.justifyContent = 'center';
+      loader.style.alignItems = 'center';
+      loader.style.zIndex = '999999';
+
+      const originalScrollY = window.scrollY;
+      const originalScrollX = window.scrollX;
+      window.scrollTo(0, 0);
+
+      let pdfStyle = null;
+      const styleParentMap = [];
+
+      function cleanup() {
+        // Remove temporary style sheet
+        if (pdfStyle && pdfStyle.parentNode) {
+          pdfStyle.parentNode.removeChild(pdfStyle);
+        }
+        // Restore parent styles
+        styleParentMap.forEach(function(item) {
+          try {
+            item.parent.insertBefore(item.sheet, item.nextSibling);
+          } catch (e) {
+            console.error('Error restoring style:', e);
+            document.head.appendChild(item.sheet);
+          }
+        });
+
+        // Reset loader styling and text
+        loader.style.display = 'none';
+        loader.style.position = '';
+        loader.style.top = '';
+        loader.style.left = '';
+        loader.style.width = '';
+        loader.style.height = '';
+        loader.style.backgroundColor = '';
+        loader.style.zIndex = '';
+        loaderText.textContent = originalLoaderText;
+
+        window.scrollTo(originalScrollX, originalScrollY);
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+
+      try {
+        const reportViewEl = document.getElementById('reportView');
+        if (!reportViewEl) {
+          throw new Error('रिपोर्ट व्यू एलिमेंट (reportView) नहीं मिला।');
+        }
+
+        // 2. Temporarily remove all parent stylesheets to prevent CORS/security hangs in html2canvas
+        const originalStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
+        originalStyles.forEach(function(sheet) {
+          const parent = sheet.parentNode;
+          const nextSibling = sheet.nextSibling;
+          styleParentMap.push({ sheet: sheet, parent: parent, nextSibling: nextSibling });
+          parent.removeChild(sheet);
+        });
+
+        // 3. Inject a clean, minimal style sheet for the PDF rendering (optimized to fit on a single page)
+        pdfStyle = document.createElement('style');
+        pdfStyle.id = 'pdfStyleSheet';
+        pdfStyle.innerHTML = 
+          'body {' +
+          '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;' +
+          '  color: #0f172a;' +
+          '  background-color: #ffffff;' +
+          '  font-size: 12px;' +
+          '  line-height: 1.3;' +
+          '}' +
+          '#reportView {' +
+          '  display: block !important;' +
+          '  padding: 10px !important;' +
+          '  margin: 0px !important;' +
+          '  border: none !important;' +
+          '  box-shadow: none !important;' +
+          '  max-width: 100% !important;' +
+          '}' +
+          '.print-header {' +
+          '  text-align: center;' +
+          '  margin-bottom: 12px;' +
+          '  border-bottom: 2px solid #0f172a;' +
+          '  padding-bottom: 6px;' +
+          '}' +
+          '.print-header h1 {' +
+          '  font-size: 1.4rem;' +
+          '  margin: 0 0 3px 0;' +
+          '  color: #0f172a;' +
+          '}' +
+          '.print-header p {' +
+          '  margin: 2px 0;' +
+          '  font-size: 0.8rem;' +
+          '  color: #475569;' +
+          '}' +
+          '.print-section {' +
+          '  margin-bottom: 10px;' +
+          '  page-break-inside: avoid;' +
+          '}' +
+          '.print-section-title {' +
+          '  font-weight: 700;' +
+          '  font-size: 0.95rem;' +
+          '  background-color: #f1f5f9;' +
+          '  padding: 4px 8px;' +
+          '  margin-bottom: 6px;' +
+          '  border-left: 3px solid #d97706;' +
+          '  color: #0f172a;' +
+          '}' +
+          '.print-grid {' +
+          '  display: flex;' +
+          '  gap: 10px;' +
+          '  margin-bottom: 4px;' +
+          '}' +
+          '.print-grid > div {' +
+          '  flex: 1;' +
+          '}' +
+          '.print-grid-3 {' +
+          '  display: flex;' +
+          '  gap: 10px;' +
+          '  margin-bottom: 4px;' +
+          '}' +
+          '.print-grid-3 > div {' +
+          '  flex: 1;' +
+          '}' +
+          '.print-field {' +
+          '  font-size: 0.8rem;' +
+          '  color: #334155;' +
+          '  margin-bottom: 2px;' +
+          '}' +
+          '.print-field strong {' +
+          '  color: #0f172a;' +
+          '}' +
+          '.info-block-box {' +
+          '  border: 1px solid #cbd5e1;' +
+          '  border-radius: 4px;' +
+          '  padding: 8px 10px;' +
+          '  background-color: #f8fafc;' +
+          '  box-sizing: border-box;' +
+          '}' +
+          '.info-block-title {' +
+          '  font-weight: 700;' +
+          '  font-size: 0.8rem;' +
+          '  border-bottom: 1.5px solid #d97706;' +
+          '  padding-bottom: 2px;' +
+          '  margin-bottom: 6px;' +
+          '  color: #0f172a;' +
+          '  text-transform: uppercase;' +
+          '}' +
+          'table {' +
+          '  width: 100%;' +
+          '  border-collapse: collapse;' +
+          '  margin-top: 4px;' +
+          '  margin-bottom: 6px;' +
+          '}' +
+          'th, td {' +
+          '  border: 1px solid #cbd5e1;' +
+          '  padding: 4px 6px;' +
+          '  font-size: 0.75rem;' +
+          '  text-align: left;' +
+          '}' +
+          'th {' +
+          '  background-color: #f8fafc;' +
+          '  font-weight: 700;' +
+          '  color: #0f172a;' +
+          '}' +
+          'ol {' +
+          '  margin: 0;' +
+          '  padding-left: 15px;' +
+          '}' +
+          'li {' +
+          '  font-size: 0.75rem;' +
+          '  margin-bottom: 2px;' +
+          '  color: #334155;' +
+          '}' +
+          '.signature-block {' +
+          '  margin-top: 15px;' +
+          '  display: flex;' +
+          '  justify-content: space-between;' +
+          '  border-top: 1px solid #cbd5e1;' +
+          '  padding-top: 8px;' +
+          '  page-break-inside: avoid;' +
+          '}' +
+          '.sig-line {' +
+          '  font-size: 0.75rem;' +
+          '  color: #0f172a;' +
+          '}' +
+          'img {' +
+          '  max-width: 150px;' +
+          '  max-height: 50px;' +
+          '  display: block;' +
+          '  margin-bottom: 3px;' +
+          '}';
+        document.head.appendChild(pdfStyle);
+
+        // 4. Get naming details
+        const rNameEl = document.getElementById('r_name');
+        const inspectorName = rNameEl ? (rNameEl.textContent.trim() || 'Inspector') : 'Inspector';
+        
+        const rHlbEl = document.getElementById('r_hlb');
+        const hlbNo = rHlbEl ? (rHlbEl.textContent.replace(/HLB/i, '').trim() || 'N-A') : 'N-A';
+        
+        const rDateEl = document.getElementById('r_date');
+        const dateVal = rDateEl ? (rDateEl.textContent.trim() || 'Date') : 'Date';
+        
+        const cleanName = transliterateName(inspectorName)
+          .replace(/[^a-zA-Z0-9\s-_]/g, '')
+          .trim()
+          .replace(/\s+/g, '_');
+        
+        const filename = 'Census_Report_HLB_' + hlbNo + '_' + cleanName + '_' + dateVal + '.pdf';
+
+        const opt = {
+          margin: [8, 8, 8, 8],
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.95 },
+          html2canvas: { 
+            scale: 1.5, // High resolution
+            useCORS: false,
+            logging: false,
+            scrollY: 0,
+            scrollX: 0
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // 5. Render PDF using parent window context (guarantees content visibility)
+        setTimeout(function() {
+          try {
+            window.html2pdf().set(opt).from(reportViewEl).toPdf().output('blob').then(function(blob) {
+              cleanup();
+
+              const file = new File([blob], filename, { type: "application/pdf" });
+              
+              // Share
+              if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                  files: [file],
+                  title: 'Census Report - HLB ' + hlbNo,
+                  text: 'जनगणना निरीक्षण फील्ड रिपोर्ट - HLB ' + hlbNo + ' (' + inspectorName + ')',
+                })
+                .then(function() { console.log('Shared successfully'); })
+                .catch(function(error) {
+                  if (error.name !== 'AbortError') {
+                    alert('साझा करने में असमर्थ: ' + error.message);
+                  }
+                });
+              } else {
+                // Download fallback
+                alert("सीधे फ़ाइल साझाकरण (File Sharing) उपलब्ध नहीं है। PDF फ़ाइल को डाउनलोड किया जा रहा है, जिसे आप व्हाट्सएप पर आसानी से शेयर कर सकते हैं।");
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              }
+            }).catch(function(err) {
+              cleanup();
+              console.error(err);
+              alert('PDF बनाने में त्रुटि: ' + err.toString());
+            });
+          } catch (err) {
+            cleanup();
+            console.error(err);
+            alert('PDF बनाने में त्रुटि: ' + err.toString());
+          }
+        }, 250);
+
+      } catch (err) {
+        cleanup();
+        console.error(err);
+        alert('प्रारंभिक सेट-अप में त्रुटि: ' + err.toString());
+      }
     }
   </script>
 </body>
