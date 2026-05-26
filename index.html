@@ -4020,15 +4020,18 @@
       adminReportsData.forEach(r => {
         const name = r.inspector_name;
         if (!name) return;
-        if (!grouped[name]) {
-          grouped[name] = [];
+        const role = r.inspector_role || '';
+        // Group by name + circle for supervisors, so each circle is tracked separately.
+        const key = role.includes('Supervisor') ? name + '_' + (r.supervisor_circle_no || '') : name;
+        if (!grouped[key]) {
+          grouped[key] = [];
         }
-        grouped[name].push(r);
+        grouped[key].push(r);
       });
 
       const latestReports = [];
-      Object.keys(grouped).forEach(name => {
-        const sorted = grouped[name].sort((a, b) => {
+      Object.keys(grouped).forEach(key => {
+        const sorted = grouped[key].sort((a, b) => {
           const timeA = new Date(a.timestamp || a.inspection_date).getTime();
           const timeB = new Date(b.timestamp || b.inspection_date).getTime();
           return timeB - timeA;
@@ -4247,9 +4250,22 @@
         const circleStr = String(i);
         const supervisorName = CENSUS_DATA[circleStr] ? CENSUS_DATA[circleStr].supervisor : '-';
         const nameLower = supervisorName.trim().toLowerCase();
-        const inspectedHlbs = inspectorInspections[nameLower];
         
-        const isInspected = !!inspectedHlbs && inspectedHlbs.length > 0;
+        // Find reports for this circle where inspector name matches supervisor name of this circle
+        const circleReports = todayReports.filter(r => {
+          const rCircle = String(r.supervisor_circle_no || '').trim();
+          const rInspector = String(r.inspector_name || '').trim().toLowerCase();
+          return rCircle === circleStr && rInspector === nameLower;
+        });
+        
+        const inspectedHlbs = [];
+        circleReports.forEach(r => {
+          if (r.hlb_no && !inspectedHlbs.includes(r.hlb_no)) {
+            inspectedHlbs.push(r.hlb_no);
+          }
+        });
+        
+        const isInspected = inspectedHlbs.length > 0;
         
         let hlbDisplay = '';
         let statusBadge = '';
