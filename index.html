@@ -1866,11 +1866,72 @@
         </div>
 
         <!-- Print-only header -->
-        <div class="print-only-section" id="print_hlb_header" style="display: none;">
-          <div class="print-header">
-            <h1>जनगणना निरीक्षण - 1 से 242 HLB प्रगति रिपोर्ट</h1>
-            <p>भारत सरकार - जनगणना कार्य / Govt. of India - Census Operations</p>
-            <p style="margin-top: 5px; font-weight: bold;" id="print_hlb_datesub"></p>
+        <div class="print-only-section" id="print_hlb_header" style="display: none; font-family: var(--font-hindi); margin-bottom: 25px;">
+          <!-- Official letterhead -->
+          <div style="text-align: center; font-weight: bold; border-bottom: 2px solid #000000; padding-bottom: 10px; margin-bottom: 15px;">
+            <span style="font-size: 1.4rem;">कार्यालय चार्ज अधिकारी (तहसीलदार), भिनाय (अजमेर)</span><br>
+            <span style="font-size: 1rem; font-weight: normal; letter-spacing: 0.5px;">भारत सरकार - जनगणना कार्य / Census of India</span>
+          </div>
+          
+          <!-- Memo details -->
+          <div style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 20px; border-bottom: 1px dashed #000000; padding-bottom: 10px;">
+            <div><strong>प्रेषक:</strong> चार्ज लिपिक, भिनाय</div>
+            <div><strong>प्रेषित:</strong> श्रीमान चार्ज अधिकारी एवं तहसीलदार महोदय, भिनाय (अजमेर)</div>
+            <div><strong>विषय:</strong> जनगणना कार्य के अंतर्गत १ से २४२ HLB की प्रगति एवं निरीक्षण रिपोर्ट</div>
+            <div><strong>दिनांक:</strong> <span id="print_hlb_datesub_val"></span></div>
+          </div>
+
+          <!-- Progress summary table -->
+          <div style="margin-bottom: 20px;">
+            <p style="font-size: 1.1rem; font-weight: bold; margin-bottom: 8px;">📊 प्रगति सारांश (Progress Summary):</p>
+            <table style="width: 100%; border: 1px solid #000000; border-collapse: collapse; margin-bottom: 15px; font-size: 0.95rem;">
+              <thead>
+                <tr style="background-color: #f2f2f2;">
+                  <th style="border: 1px solid #000000; padding: 8px; text-align: center;">कुल HLBs</th>
+                  <th style="border: 1px solid #000000; padding: 8px; text-align: center;">कुल निरीक्षित HLBs</th>
+                  <th style="border: 1px solid #000000; padding: 8px; text-align: center;">कुल अपेक्षित मकान (Expected)</th>
+                  <th style="border: 1px solid #000000; padding: 8px; text-align: center;">कुल सिंक मकान (Sync)</th>
+                  <th style="border: 1px solid #000000; padding: 8px; text-align: center;">समग्र प्रगति (Overall Rate)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="text-align: center; font-weight: bold;">
+                  <td style="border: 1px solid #000000; padding: 8px;">242</td>
+                  <td style="border: 1px solid #000000; padding: 8px;" id="print_stat_hlb_inspected">0</td>
+                  <td style="border: 1px solid #000000; padding: 8px;" id="print_stat_hlb_expected">0</td>
+                  <td style="border: 1px solid #000000; padding: 8px;" id="print_stat_hlb_sync">0</td>
+                  <td style="border: 1px solid #000000; padding: 8px; color: #166534;" id="print_stat_hlb_percent">0%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Top / Bottom 5 HLBs Grid for Print -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+            <div style="border: 1px solid #000000; padding: 12px; border-radius: 4px;">
+              <p style="font-weight: bold; color: #166534; margin-bottom: 8px; border-bottom: 1px solid #000000; padding-bottom: 4px; font-size: 0.95rem;">📈 उच्चतम 5 HLB (Top 5 HLBs)</p>
+              <ul id="print_top_hlb_list" style="list-style: none; padding-left: 0; font-size: 0.85rem; margin: 0; line-height: 1.5;">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
+            <div style="border: 1px solid #000000; padding: 12px; border-radius: 4px;">
+              <p style="font-weight: bold; color: #991b1b; margin-bottom: 8px; border-bottom: 1px solid #000000; padding-bottom: 4px; font-size: 0.95rem;">📉 न्यूनतम 5 HLB (Bottom 5 HLBs)</p>
+              <ul id="print_bottom_hlb_list" style="list-style: none; padding-left: 0; font-size: 0.85rem; margin: 0; line-height: 1.5;">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 0.95rem;">
+            <div>प्रतिवेदन प्रस्तुतकर्ता:</div>
+            <div style="text-align: center;">
+              <strong>(चार्ज लिपिक)</strong><br>
+              कार्यालय charge अधिकारी, भिनाय
+            </div>
+          </div>
+          
+          <div style="border-top: 2px solid #000000; margin-top: 20px; padding-top: 10px; font-weight: bold; font-size: 1.1rem; text-align: center; page-break-after: avoid;">
+            HLB-वार विस्तृत प्रगति रिपोर्ट (Detailed Progress Report)
           </div>
         </div>
 
@@ -3537,9 +3598,18 @@
       document.getElementById('r_supervisor_circle').textContent = data.supervisor_circle_no;
       document.getElementById('r_hlb').textContent = data.hlb_no || '-';
 
-      document.getElementById('r_assigned').textContent = data.assigned_houses;
-      document.getElementById('r_completed').textContent = data.completed_houses;
-      document.getElementById('r_pending').textContent = data.pending_houses;
+      // Retrieve sync houses for this HLB
+      const syncValForHlb = window.hlbSyncData && window.hlbSyncData[String(data.hlb_no)] !== undefined
+        ? parseInt(window.hlbSyncData[String(data.hlb_no)]) || 0
+        : 0;
+      const completedVal = parseInt(data.completed_houses) || 0;
+      const displayCompletedVal = completedVal < syncValForHlb ? syncValForHlb : completedVal;
+      const assignedVal = parseInt(data.assigned_houses) || 0;
+      const displayPendingVal = Math.max(0, assignedVal - displayCompletedVal);
+
+      document.getElementById('r_assigned').textContent = assignedVal;
+      document.getElementById('r_completed').textContent = displayCompletedVal;
+      document.getElementById('r_pending').textContent = displayPendingVal;
       document.getElementById('r_map').textContent = data.map_correct;
       document.getElementById('r_missed').textContent = data.missed_houses;
 
@@ -4241,9 +4311,16 @@
         });
       }
 
-      // 1. Update stats cards
+      // 1. Calculate overall expected and sync houses
+      let totalExpectedHouses = 0;
+      let totalSyncHouses = 0;
+      allHlbs.forEach(item => {
+        totalExpectedHouses += item.expected;
+        totalSyncHouses += item.sync;
+      });
+
       let inspectedCount = Object.keys(window.hlbStatusMap).length;
-      const overallPercent = (inspectedCount / 242) * 100;
+      const overallPercent = totalExpectedHouses > 0 ? (totalSyncHouses / totalExpectedHouses) * 100 : 0;
       
       document.getElementById('stat_hlb_inspected').textContent = inspectedCount;
       document.getElementById('stat_hlb_percent').textContent = overallPercent.toFixed(1) + '%';
@@ -4258,6 +4335,16 @@
         else if (overallPercent > 0) overallColor = '#ef4444'; // red
         overallProgressFill.style.backgroundColor = overallColor;
       }
+
+      // Populate print stats
+      const printInspected = document.getElementById('print_stat_hlb_inspected');
+      if (printInspected) printInspected.textContent = inspectedCount;
+      const printExpected = document.getElementById('print_stat_hlb_expected');
+      if (printExpected) printExpected.textContent = totalExpectedHouses;
+      const printSync = document.getElementById('print_stat_hlb_sync');
+      if (printSync) printSync.textContent = totalSyncHouses;
+      const printPercent = document.getElementById('print_stat_hlb_percent');
+      if (printPercent) printPercent.textContent = overallPercent.toFixed(1) + '%';
 
       // 2. Compute Top 5 HLBs (Highest progress, only from inspected ones or highest sync)
       const sortedForTop = [...allHlbs].sort((a, b) => {
@@ -4323,6 +4410,12 @@
           bottomListEl.appendChild(li);
         });
       }
+
+      // Copy lists to print elements
+      const printTopList = document.getElementById('print_top_hlb_list');
+      if (printTopList && topListEl) printTopList.innerHTML = topListEl.innerHTML;
+      const printBottomList = document.getElementById('print_bottom_hlb_list');
+      if (printBottomList && bottomListEl) printBottomList.innerHTML = bottomListEl.innerHTML;
 
       filterHlbReport();
     }
@@ -4417,13 +4510,15 @@
           </div>
         `;
 
+        const displayCompletedVal = row.completed < row.effectiveSync ? row.effectiveSync : row.completed;
+
         tr.innerHTML = `
           <td><strong>HLB ${row.hlb}</strong></td>
           <td>सर्कल ${row.master.circle}</td>
           <td>${row.master.supervisor}</td>
           <td>${row.master.enumerator}</td>
           <td>${row.expected}</td>
-          <td>${row.completed}</td>
+          <td>${displayCompletedVal}</td>
           <td>${row.effectiveSync}</td>
           <td>${row.pending}</td>
           <td>${progressBar}</td>
@@ -4592,7 +4687,10 @@
       try {
         const todayStr = new Date().toISOString().split('T')[0];
         if (currentAdminTab === 'tab_hlb') {
-          document.getElementById('print_hlb_datesub').textContent = 'रिपोर्ट दिनांक: ' + new Date().toLocaleDateString('hi-IN');
+          const dateEl = document.getElementById('print_hlb_datesub_val') || document.getElementById('print_hlb_datesub');
+          if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('hi-IN');
+          }
           document.title = `Census_HLB_Progress_Report_${todayStr}`;
         } else if (currentAdminTab === 'tab_attendance') {
           const selDate = document.getElementById('attendance_date').value;
