@@ -1856,11 +1856,9 @@
                 <th>सुपरवाइजर का नाम</th>
                 <th>प्रगणक का नाम</th>
                 <th>अपेक्षित घर (Expected)</th>
-                <th>पूर्ण घर (Completed)</th>
+                <th>सिंक घर (Sync)</th>
                 <th>बचे घर (Pending)</th>
-                <th>सिंक डेटा (Sync Data)</th>
                 <th>प्रगति % (Progress)</th>
-                <th>स्थिति (Status)</th>
               </tr>
             </thead>
             <tbody id="hlb_table_body">
@@ -4216,13 +4214,17 @@
           count++;
           const tr = document.createElement('tr');
           
+          const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
+            ? window.hlbSyncData[String(i)] 
+            : '-';
+
+          const syncCount = (syncVal !== '-' && syncVal !== '') ? (parseInt(syncVal) || 0) : 0;
           const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
-          const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
-          const pending = report ? (parseInt(report.pending_houses) || 0) : 0;
+          const pending = Math.max(0, expected - syncCount);
           
           let completionPercent = 0;
           if (expected > 0) {
-            completionPercent = Math.min(100, Math.round((completed / expected) * 100));
+            completionPercent = Math.min(100, Math.round((syncCount / expected) * 100));
           }
           
           let progressFillClass = 'empty';
@@ -4239,32 +4241,22 @@
             </div>
           `;
 
-          const statusBadge = isInspected 
-            ? '<span class="badge-status success">पूर्ण (Inspected)</span>'
-            : '<span class="badge-status danger">लंबित (Pending)</span>';
-
-          const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
-            ? window.hlbSyncData[String(i)] 
-            : '-';
-
           tr.innerHTML = `
             <td><strong>HLB ${i}</strong></td>
             <td>सर्कल ${master.circle}</td>
             <td>${master.supervisor}</td>
             <td>${master.enumerator}</td>
             <td>${expected}</td>
-            <td>${completed}</td>
-            <td>${pending}</td>
             <td>${syncVal}</td>
+            <td>${pending}</td>
             <td>${progressBar}</td>
-            <td>${statusBadge}</td>
           `;
           tbody.appendChild(tr);
         }
       }
 
       if (count === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
       }
     }
 
