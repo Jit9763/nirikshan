@@ -313,7 +313,11 @@ function getReportsData() {
               val = val.toISOString().split('T')[0];
             }
           } else {
-            val = val.toLocaleString();
+            try {
+              val = val.toISOString();
+            } catch(e) {
+              val = val.toLocaleString();
+            }
           }
         }
         obj[key] = val;
