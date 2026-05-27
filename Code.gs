@@ -361,13 +361,18 @@ function getSyncData() {
     if (lastRow <= 1) {
       return {};
     }
-    const data = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
+    // Read 3 columns instead of 2: A (HLB Number), B (Sync Completed Data), C (Total House)
+    const data = sheet.getRange(2, 1, lastRow - 1, 3).getValues();
     const syncMap = {};
     for (let i = 0; i < data.length; i++) {
       const hlbNum = String(data[i][0]).trim();
       const syncVal = data[i][1];
+      const totalVal = data[i][2];
       if (hlbNum) {
-        syncMap[hlbNum] = syncVal;
+        syncMap[hlbNum] = {
+          syncCompleted: syncVal !== '' ? (parseInt(syncVal) || 0) : '',
+          totalHouse: totalVal !== '' ? (parseInt(totalVal) || 0) : ''
+        };
       }
     }
     return syncMap;
@@ -386,7 +391,7 @@ function initSyncSheet() {
     let sheet = ss.getSheetByName(SYNC_SHEET_NAME);
     if (!sheet) {
       sheet = ss.insertSheet(SYNC_SHEET_NAME);
-      const headers = ['HLB Number', 'Sync Data'];
+      const headers = ['HLB Number', 'Sync Data', 'Total House'];
       sheet.appendRow(headers);
       sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#d9e1f2');
       sheet.setFrozenRows(1);
@@ -394,9 +399,15 @@ function initSyncSheet() {
       // Populate HLB 1 to 242 rows
       const rows = [];
       for (let i = 1; i <= 242; i++) {
-        rows.push([i, '']);
+        rows.push([i, '', '']);
       }
-      sheet.getRange(2, 1, 242, 2).setValues(rows);
+      sheet.getRange(2, 1, 242, 3).setValues(rows);
+    } else {
+      // If sheet already exists, ensure the 3rd column is titled 'Total House'
+      const lastCol = sheet.getLastColumn();
+      if (lastCol < 3) {
+        sheet.getRange(1, 3).setValue('Total House').setFontWeight('bold').setBackground('#d9e1f2');
+      }
     }
   } catch(e) {
     Logger.log("Error in initSyncSheet: " + e.toString());

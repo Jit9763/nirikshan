@@ -1944,7 +1944,8 @@
                 <th>सुपरवाइजर का नाम</th>
                 <th>प्रगणक का नाम</th>
                 <th>अपेक्षित घर (Expected)</th>
-                <th>निरीक्षण के समय डेटा</th>
+                <th>निरीक्षण के समय Total House</th>
+                <th>निरीक्षण के समय पूरे मकान</th>
                 <th>सिंक घर (Sync)</th>
                 <th>बचे घर (Pending)</th>
                 <th>प्रगति % (Progress)</th>
@@ -3599,12 +3600,17 @@
       document.getElementById('r_hlb').textContent = data.hlb_no || '-';
 
       // Retrieve sync houses for this HLB
-      const syncValForHlb = window.hlbSyncData && window.hlbSyncData[String(data.hlb_no)] !== undefined
-        ? parseInt(window.hlbSyncData[String(data.hlb_no)]) || 0
+      const syncObjForHlb = window.hlbSyncData && window.hlbSyncData[String(data.hlb_no)];
+      const syncValForHlb = syncObjForHlb
+        ? (typeof syncObjForHlb === 'object' ? parseInt(syncObjForHlb.syncCompleted) || 0 : parseInt(syncObjForHlb) || 0)
         : 0;
+      const syncTotalHouse = syncObjForHlb && typeof syncObjForHlb === 'object'
+        ? parseInt(syncObjForHlb.totalHouse) || null
+        : null;
+
       const completedVal = parseInt(data.completed_houses) || 0;
       const displayCompletedVal = completedVal < syncValForHlb ? syncValForHlb : completedVal;
-      const assignedVal = parseInt(data.assigned_houses) || 0;
+      const assignedVal = (syncTotalHouse !== null && syncTotalHouse !== '') ? syncTotalHouse : (parseInt(data.assigned_houses) || 0);
       const displayPendingVal = Math.max(0, assignedVal - displayCompletedVal);
 
       document.getElementById('r_assigned').textContent = assignedVal;
@@ -4286,11 +4292,15 @@
         const master = HLB_MASTER[i] || { circle: '-', supervisor: '-', enumerator: '-' };
         const report = window.hlbStatusMap && window.hlbStatusMap[i];
         
-        const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
-          ? window.hlbSyncData[String(i)] 
-          : '-';
+        const syncObj = window.hlbSyncData && window.hlbSyncData[String(i)];
+        const syncVal = syncObj && syncObj.syncCompleted !== undefined ? syncObj.syncCompleted : '-';
+        const syncTotalHouseVal = syncObj && syncObj.totalHouse !== undefined ? syncObj.totalHouse : '-';
+        
         const syncCount = (syncVal !== '-' && syncVal !== '') ? (parseInt(syncVal) || 0) : 0;
-        const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
+        const syncTotalHouse = (syncTotalHouseVal !== '-' && syncTotalHouseVal !== '') ? (parseInt(syncTotalHouseVal) || 0) : 0;
+        
+        const expected = syncTotalHouse; // expected is syncTotalHouse from HLBSyncData C column
+        const expectedFromNirikshan = report ? (parseInt(report.assigned_houses) || 0) : 0;
         const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
         const effectiveSync = completed < syncCount ? syncCount : completed;
         
@@ -4305,6 +4315,7 @@
           supervisor: master.supervisor,
           enumerator: master.enumerator,
           expected: expected,
+          expectedFromNirikshan: expectedFromNirikshan,
           completed: completed,
           syncVal: syncVal,
           syncCount: syncCount, // original sync count
@@ -4435,12 +4446,15 @@
         const report = window.hlbStatusMap && window.hlbStatusMap[i];
         const isInspected = !!report;
         
-        const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
-          ? window.hlbSyncData[String(i)] 
-          : '-';
+        const syncObj = window.hlbSyncData && window.hlbSyncData[String(i)];
+        const syncVal = syncObj && syncObj.syncCompleted !== undefined ? syncObj.syncCompleted : '-';
+        const syncTotalHouseVal = syncObj && syncObj.totalHouse !== undefined ? syncObj.totalHouse : '-';
 
         const syncCount = (syncVal !== '-' && syncVal !== '') ? (parseInt(syncVal) || 0) : 0;
-        const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
+        const syncTotalHouse = (syncTotalHouseVal !== '-' && syncTotalHouseVal !== '') ? (parseInt(syncTotalHouseVal) || 0) : 0;
+
+        const expected = syncTotalHouse; // expected is syncTotalHouse from HLBSyncData C column
+        const expectedFromNirikshan = report ? (parseInt(report.assigned_houses) || 0) : 0;
         const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
         
         const effectiveSync = completed < syncCount ? syncCount : completed;
@@ -4456,6 +4470,7 @@
           master: master,
           isInspected: isInspected,
           expected: expected,
+          expectedFromNirikshan: expectedFromNirikshan,
           completed: completed,
           syncVal: syncVal,
           effectiveSync: effectiveSync,
@@ -4521,7 +4536,8 @@
           <td>${row.master.supervisor}</td>
           <td>${row.master.enumerator}</td>
           <td>${row.expected}</td>
-          <td>${displayCompletedVal}</td>
+          <td>${row.isInspected ? row.expectedFromNirikshan : '-'}</td>
+          <td>${row.isInspected ? displayCompletedVal : '-'}</td>
           <td>${row.syncVal}</td>
           <td>${row.pending}</td>
           <td>${progressBar}</td>
@@ -4530,7 +4546,7 @@
       });
 
       if (count === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
       }
     }
 
