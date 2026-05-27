@@ -1820,17 +1820,44 @@
           </div>
           <div class="info-block-box" style="background-color: #fffbeb; border-color: #fef3c7;">
             <div style="font-size: 0.85rem; color: #78350f; font-weight: 600; text-transform: uppercase;">प्रगति प्रतिशत (Completion Rate)</div>
-            <div id="stat_hlb_percent" style="font-size: 2rem; font-weight: 700; color: #78350f; margin-top: 5px;">0%</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px;">
+              <div id="stat_hlb_percent" style="font-size: 2rem; font-weight: 700; color: #78350f;">0%</div>
+              <div class="progress-bar-container" style="width: 100px; height: 12px; background-color: #cbd5e1; border-radius: 6px; overflow: hidden; margin-left: 10px;">
+                <div id="stat_hlb_progress_fill" style="height: 100%; width: 0%; background-color: #10b981; transition: width 0.3s ease;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top 5 / Bottom 5 HLB Section -->
+        <div class="grid-2 no-print" style="margin-bottom: 25px; gap: 20px;">
+          <div class="info-block-box" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+            <div style="font-weight: 700; font-size: 0.95rem; color: #166534; border-bottom: 1.5px solid #166534; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase;">
+              📈 उच्चतम 5 HLB (Top 5 HLBs)
+            </div>
+            <ul id="top_hlb_list" style="list-style: none; padding-left: 0; font-size: 0.9rem;">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+          <div class="info-block-box" style="background-color: #fee2e2; border-color: #fca5a5;">
+            <div style="font-weight: 700; font-size: 0.95rem; color: #991b1b; border-bottom: 1.5px solid #991b1b; padding-bottom: 6px; margin-bottom: 12px; text-transform: uppercase;">
+              📉 न्यूनतम 5 HLB (Bottom 5 HLBs)
+            </div>
+            <ul id="bottom_hlb_list" style="list-style: none; padding-left: 0; font-size: 0.9rem;">
+              <!-- Dynamically populated -->
+            </ul>
           </div>
         </div>
 
         <div class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-          <div style="display: flex; gap: 10px; flex-grow: 1; max-width: 600px;">
+          <div style="display: flex; gap: 10px; flex-grow: 1; max-width: 650px;">
             <input type="text" id="hlb_search" placeholder="खोजें (HLB नंबर, सुपरवाइजर या प्रगणक)" oninput="filterHlbReport()" style="flex-grow: 1;">
-            <select id="hlb_status_filter" onchange="filterHlbReport()" style="width: 200px;">
+            <select id="hlb_status_filter" onchange="filterHlbReport()" style="width: 260px;">
               <option value="">सभी स्थिति (All Status)</option>
               <option value="inspected">निरीक्षण हो चुका (Inspected)</option>
               <option value="pending">निरीक्षण लंबित (Pending)</option>
+              <option value="high_to_low">प्रगति: उच्चतम से न्यूनतम (High to Low)</option>
+              <option value="low_to_high">प्रगति: न्यूनतम से उच्चतम (Low to High)</option>
             </select>
           </div>
           <button type="button" class="btn btn-primary" onclick="printActiveReport('print_hlb_report')" style="padding: 8px 16px; font-size: 0.9rem;">
@@ -4183,9 +4210,119 @@
         window.hlbStatusMap[hlb] = sorted[0];
       });
 
+      // Calculate all HLBs data for stats, top 5, bottom 5
+      const allHlbs = [];
+      for (let i = 1; i <= 242; i++) {
+        const master = HLB_MASTER[i] || { circle: '-', supervisor: '-', enumerator: '-' };
+        const report = window.hlbStatusMap && window.hlbStatusMap[i];
+        
+        const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
+          ? window.hlbSyncData[String(i)] 
+          : '-';
+        const syncCount = (syncVal !== '-' && syncVal !== '') ? (parseInt(syncVal) || 0) : 0;
+        const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
+        const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
+        const effectiveSync = completed < syncCount ? syncCount : completed;
+        
+        let completionPercent = 0;
+        if (expected > 0) {
+          completionPercent = Math.min(100, Math.round((effectiveSync / expected) * 100));
+        }
+        
+        allHlbs.push({
+          hlb: i,
+          circle: master.circle,
+          supervisor: master.supervisor,
+          enumerator: master.enumerator,
+          expected: expected,
+          sync: effectiveSync,
+          percent: completionPercent,
+          isInspected: !!report
+        });
+      }
+
+      // 1. Update stats cards
       let inspectedCount = Object.keys(window.hlbStatusMap).length;
+      const overallPercent = (inspectedCount / 242) * 100;
+      
       document.getElementById('stat_hlb_inspected').textContent = inspectedCount;
-      document.getElementById('stat_hlb_percent').textContent = ((inspectedCount / 242) * 100).toFixed(1) + '%';
+      document.getElementById('stat_hlb_percent').textContent = overallPercent.toFixed(1) + '%';
+      
+      // Update overall progress bar
+      const overallProgressFill = document.getElementById('stat_hlb_progress_fill');
+      if (overallProgressFill) {
+        overallProgressFill.style.width = overallPercent.toFixed(1) + '%';
+        let overallColor = '#cbd5e1'; // gray
+        if (overallPercent >= 80) overallColor = '#10b981'; // green
+        else if (overallPercent >= 40) overallColor = '#d97706'; // amber
+        else if (overallPercent > 0) overallColor = '#ef4444'; // red
+        overallProgressFill.style.backgroundColor = overallColor;
+      }
+
+      // 2. Compute Top 5 HLBs (Highest progress, only from inspected ones or highest sync)
+      const sortedForTop = [...allHlbs].sort((a, b) => {
+        if (a.isInspected !== b.isInspected) return b.isInspected - a.isInspected;
+        return b.percent - a.percent || b.sync - a.sync || a.hlb - b.hlb;
+      });
+      const top5 = sortedForTop.slice(0, 5);
+
+      // 3. Compute Bottom 5 HLBs (Lowest progress)
+      const sortedForBottom = [...allHlbs].sort((a, b) => {
+        return a.percent - b.percent || a.sync - b.sync || a.hlb - b.hlb;
+      });
+      const bottom5 = sortedForBottom.slice(0, 5);
+
+      // 4. Render Top 5 List
+      const topListEl = document.getElementById('top_hlb_list');
+      if (topListEl) {
+        topListEl.innerHTML = '';
+        top5.forEach((item, idx) => {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.justifyContent = 'space-between';
+          li.style.padding = '6px 0';
+          li.style.borderBottom = idx < 4 ? '1px dashed rgba(22, 101, 52, 0.15)' : 'none';
+          
+          let displayStr = '';
+          if (item.isInspected) {
+            displayStr = `${item.percent}% (${item.sync}/${item.expected})`;
+          } else {
+            displayStr = `लंबित (0%)`;
+          }
+          
+          li.innerHTML = `
+            <span><strong>HLB ${item.hlb}</strong> (सर्कल ${item.circle} - ${item.enumerator})</span>
+            <span style="font-weight: bold; color: #166534;">${displayStr}</span>
+          `;
+          topListEl.appendChild(li);
+        });
+      }
+
+      // 5. Render Bottom 5 List
+      const bottomListEl = document.getElementById('bottom_hlb_list');
+      if (bottomListEl) {
+        bottomListEl.innerHTML = '';
+        bottom5.forEach((item, idx) => {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.justifyContent = 'space-between';
+          li.style.padding = '6px 0';
+          li.style.borderBottom = idx < 4 ? '1px dashed rgba(153, 27, 27, 0.15)' : 'none';
+          
+          let displayStr = '';
+          if (item.isInspected) {
+            displayStr = `${item.percent}% (${item.sync}/${item.expected})`;
+          } else {
+            displayStr = `लंबित (Pending)`;
+          }
+          
+          li.innerHTML = `
+            <span><strong>HLB ${item.hlb}</strong> (सर्कल ${item.circle} - ${item.enumerator})</span>
+            <span style="font-weight: bold; color: #991b1b;">${displayStr}</span>
+          `;
+          bottomListEl.appendChild(li);
+        });
+      }
 
       filterHlbReport();
     }
@@ -4196,70 +4333,103 @@
       const tbody = document.getElementById('hlb_table_body');
       tbody.innerHTML = '';
 
-      let count = 0;
+      const rowsData = [];
       for (let i = 1; i <= 242; i++) {
         const master = HLB_MASTER[i] || { circle: '-', supervisor: '-', enumerator: '-' };
         const report = window.hlbStatusMap && window.hlbStatusMap[i];
         const isInspected = !!report;
         
+        const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
+          ? window.hlbSyncData[String(i)] 
+          : '-';
+
+        const syncCount = (syncVal !== '-' && syncVal !== '') ? (parseInt(syncVal) || 0) : 0;
+        const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
+        const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
+        
+        const effectiveSync = completed < syncCount ? syncCount : completed;
+        const pending = Math.max(0, expected - effectiveSync);
+        
+        let completionPercent = 0;
+        if (expected > 0) {
+          completionPercent = Math.min(100, Math.round((effectiveSync / expected) * 100));
+        }
+
+        rowsData.push({
+          hlb: i,
+          master: master,
+          isInspected: isInspected,
+          expected: expected,
+          completed: completed,
+          syncVal: syncVal,
+          effectiveSync: effectiveSync,
+          pending: pending,
+          percent: completionPercent
+        });
+      }
+
+      // Filter rows
+      let filteredRows = rowsData.filter(row => {
         const matchesSearch = 
-          String(i).includes(searchVal) ||
-          master.supervisor.toLowerCase().includes(searchVal) ||
-          master.enumerator.toLowerCase().includes(searchVal);
+          String(row.hlb).includes(searchVal) ||
+          row.master.supervisor.toLowerCase().includes(searchVal) ||
+          row.master.enumerator.toLowerCase().includes(searchVal);
         
         let matchesStatus = true;
-        if (statusFilter === 'inspected') matchesStatus = isInspected;
-        if (statusFilter === 'pending') matchesStatus = !isInspected;
+        if (statusFilter === 'inspected') matchesStatus = row.isInspected;
+        if (statusFilter === 'pending') matchesStatus = !row.isInspected;
+        // Sorting choices don't filter out anything
+        
+        return matchesSearch && matchesStatus;
+      });
 
-        if (matchesSearch && matchesStatus) {
-          count++;
-          const tr = document.createElement('tr');
-          
-          const syncVal = window.hlbSyncData && window.hlbSyncData[String(i)] !== undefined 
-            ? window.hlbSyncData[String(i)] 
-            : '-';
-
-          const syncCount = (syncVal !== '-' && syncVal !== '') ? (parseInt(syncVal) || 0) : 0;
-          const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
-          const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
-          
-          // logic: completed < syncCount ? syncCount : completed
-          const effectiveSync = completed < syncCount ? syncCount : completed;
-          const pending = Math.max(0, expected - effectiveSync);
-          
-          let completionPercent = 0;
-          if (expected > 0) {
-            completionPercent = Math.min(100, Math.round((effectiveSync / expected) * 100));
-          }
-          
-          let progressFillClass = 'empty';
-          if (expected > 0) {
-            progressFillClass = completionPercent === 100 ? '' : 'pending';
-          }
-          
-          const progressBar = `
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div class="progress-bar-container" style="width: 80px;">
-                <div class="progress-bar-fill ${progressFillClass}" style="width: ${completionPercent}%"></div>
-              </div>
-              <span style="font-size: 0.8rem; font-weight: bold;">${completionPercent}%</span>
-            </div>
-          `;
-
-          tr.innerHTML = `
-            <td><strong>HLB ${i}</strong></td>
-            <td>सर्कल ${master.circle}</td>
-            <td>${master.supervisor}</td>
-            <td>${master.enumerator}</td>
-            <td>${expected}</td>
-            <td>${completed}</td>
-            <td>${effectiveSync}</td>
-            <td>${pending}</td>
-            <td>${progressBar}</td>
-          `;
-          tbody.appendChild(tr);
-        }
+      // Sort rows
+      if (statusFilter === 'high_to_low') {
+        filteredRows.sort((a, b) => b.percent - a.percent || b.effectiveSync - a.effectiveSync || a.hlb - b.hlb);
+      } else if (statusFilter === 'low_to_high') {
+        filteredRows.sort((a, b) => a.percent - b.percent || a.effectiveSync - b.effectiveSync || a.hlb - b.hlb);
       }
+
+      // Render rows
+      let count = 0;
+      filteredRows.forEach(row => {
+        count++;
+        const tr = document.createElement('tr');
+        
+        // Color coding based on percentage:
+        // >= 80%: green (#10b981)
+        // >= 40% and < 80%: orange/amber (#d97706)
+        // > 0% and < 40%: red (#ef4444)
+        // 0% or no expected: gray (#cbd5e1)
+        let progressFillColor = '#cbd5e1';
+        if (row.expected > 0) {
+          if (row.percent >= 80) progressFillColor = '#10b981';
+          else if (row.percent >= 40) progressFillColor = '#d97706';
+          else progressFillColor = '#ef4444';
+        }
+        
+        const progressBar = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="progress-bar-container" style="width: 80px;">
+              <div class="progress-bar-fill" style="width: ${row.percent}%; background-color: ${progressFillColor};"></div>
+            </div>
+            <span style="font-size: 0.8rem; font-weight: bold;">${row.percent}%</span>
+          </div>
+        `;
+
+        tr.innerHTML = `
+          <td><strong>HLB ${row.hlb}</strong></td>
+          <td>सर्कल ${row.master.circle}</td>
+          <td>${row.master.supervisor}</td>
+          <td>${row.master.enumerator}</td>
+          <td>${row.expected}</td>
+          <td>${row.completed}</td>
+          <td>${row.effectiveSync}</td>
+          <td>${row.pending}</td>
+          <td>${progressBar}</td>
+        `;
+        tbody.appendChild(tr);
+      });
 
       if (count === 0) {
         tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
