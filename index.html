@@ -1856,6 +1856,7 @@
                 <th>सुपरवाइजर का नाम</th>
                 <th>प्रगणक का नाम</th>
                 <th>अपेक्षित घर (Expected)</th>
+                <th>निरीक्षण के समय डेटा</th>
                 <th>सिंक घर (Sync)</th>
                 <th>बचे घर (Pending)</th>
                 <th>प्रगति % (Progress)</th>
@@ -4220,11 +4221,15 @@
 
           const syncCount = (syncVal !== '-' && syncVal !== '') ? (parseInt(syncVal) || 0) : 0;
           const expected = report ? (parseInt(report.assigned_houses) || 0) : 0;
-          const pending = Math.max(0, expected - syncCount);
+          const completed = report ? (parseInt(report.completed_houses) || 0) : 0;
+          
+          // logic: completed < syncCount ? syncCount : completed
+          const effectiveSync = completed < syncCount ? syncCount : completed;
+          const pending = Math.max(0, expected - effectiveSync);
           
           let completionPercent = 0;
           if (expected > 0) {
-            completionPercent = Math.min(100, Math.round((syncCount / expected) * 100));
+            completionPercent = Math.min(100, Math.round((effectiveSync / expected) * 100));
           }
           
           let progressFillClass = 'empty';
@@ -4247,7 +4252,8 @@
             <td>${master.supervisor}</td>
             <td>${master.enumerator}</td>
             <td>${expected}</td>
-            <td>${syncVal}</td>
+            <td>${completed}</td>
+            <td>${effectiveSync}</td>
             <td>${pending}</td>
             <td>${progressBar}</td>
           `;
@@ -4256,7 +4262,7 @@
       }
 
       if (count === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #64748b;">कोई मेल खाता HLB रिकॉर्ड नहीं मिला।</td></tr>';
       }
     }
 
