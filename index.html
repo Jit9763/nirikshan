@@ -4305,7 +4305,10 @@
           supervisor: master.supervisor,
           enumerator: master.enumerator,
           expected: expected,
-          sync: effectiveSync,
+          completed: completed,
+          syncVal: syncVal,
+          syncCount: syncCount, // original sync count
+          sync: effectiveSync, // adjusted sync/completed count
           percent: completionPercent,
           isInspected: !!report
         });
@@ -4316,7 +4319,7 @@
       let totalSyncHouses = 0;
       allHlbs.forEach(item => {
         totalExpectedHouses += item.expected;
-        totalSyncHouses += item.sync;
+        totalSyncHouses += item.syncCount; // sum of original sync houses!
       });
 
       let inspectedCount = Object.keys(window.hlbStatusMap).length;
@@ -4519,7 +4522,7 @@
           <td>${row.master.enumerator}</td>
           <td>${row.expected}</td>
           <td>${displayCompletedVal}</td>
-          <td>${row.effectiveSync}</td>
+          <td>${row.syncVal}</td>
           <td>${row.pending}</td>
           <td>${progressBar}</td>
         `;
